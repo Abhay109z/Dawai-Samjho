@@ -18,7 +18,7 @@ import {
   listCabinetItems,
   updateCabinetItem,
 } from './server/db.ts';
-import { connectMongoAtlas } from './server/mongo.ts';
+import { connectMongoAtlas, getMongoStatus } from './server/mongo.ts';
 import type { AiVisionAnalysis, CabinetItem, Medicine } from './src/types.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -53,6 +53,15 @@ async function startServer() {
 
   const app = express();
   app.use(express.json({ limit: '12mb' }));
+
+  app.get('/api/health', (_req, res) => {
+    const status = getMongoStatus();
+    res.json({
+      ok: true,
+      storage: status.connected ? 'mongodb_atlas' : 'local_fallback',
+      reason: status.reason,
+    });
+  });
 
   // 1. Medicines catalog & fuzzy search
   app.get('/api/medicines', async (req, res) => {

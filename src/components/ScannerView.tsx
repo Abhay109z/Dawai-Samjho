@@ -30,6 +30,7 @@ import {
 
 interface ScannerViewProps {
   lang: Language;
+  authToken: string;
   onSpeak: (text: string) => void;
   onOpenMedicine: (medicine: Medicine) => void;
   onAddToCabinet: (medicine: Medicine, detectedExpiry?: string) => void;
@@ -38,6 +39,7 @@ interface ScannerViewProps {
 
 export function ScannerView({
   lang,
+  authToken,
   onSpeak,
   onOpenMedicine,
   onAddToCabinet,
@@ -223,7 +225,10 @@ export function ScannerView({
         setScanProgress(45);
         const resp = await fetch('/api/ocr/analyze-image', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
           body: JSON.stringify({
             imageBase64: originalImage,
             mimeType: 'image/png',

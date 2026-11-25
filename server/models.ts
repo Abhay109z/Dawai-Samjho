@@ -4,6 +4,25 @@ import type { CabinetItem, JanAushadhiStore, Medicine } from '../src/types.ts';
 mongoose.set('sanitizeFilter', true);
 mongoose.set('strictQuery', true);
 
+export interface StoredUserRecord {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  createdAt: string;
+}
+
+const UserSchema = new Schema<StoredUserRecord>(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true, index: true },
+    passwordHash: { type: String, required: true },
+    createdAt: { type: String, required: true },
+  },
+  { collection: 'users', versionKey: false }
+);
+
 const BilingualTextSchema = new Schema(
   {
     en: { type: String, required: true },
@@ -76,6 +95,7 @@ const StoreSchema = new Schema<JanAushadhiStore>(
 const CabinetItemSchema = new Schema<CabinetItem>(
   {
     id: { type: String, required: true, unique: true, index: true },
+    ownerId: { type: String, required: true, index: true },
     medicineId: { type: String, required: false },
     name: { type: String, required: true },
     genericName: { type: String, required: false },
@@ -89,6 +109,10 @@ const CabinetItemSchema = new Schema<CabinetItem>(
   },
   { collection: 'cabinet_items', versionKey: false }
 );
+
+export const UserModel =
+  (mongoose.models.User as mongoose.Model<StoredUserRecord>) ||
+  mongoose.model<StoredUserRecord>('User', UserSchema);
 
 export const MedicineModel =
   (mongoose.models.Medicine as mongoose.Model<Medicine>) ||

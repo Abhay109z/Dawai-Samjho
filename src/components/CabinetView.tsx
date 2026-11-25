@@ -13,6 +13,9 @@ import { getText } from '../i18n';
 
 interface CabinetViewProps {
   lang: Language;
+  authToken: string;
+  isGuest: boolean;
+  onOpenAuth: () => void;
   medicines: Medicine[];
   items: CabinetItem[];
   onRefresh: () => Promise<void>;
@@ -23,6 +26,9 @@ interface CabinetViewProps {
 
 export function CabinetView({
   lang,
+  authToken,
+  isGuest,
+  onOpenAuth,
   medicines,
   items,
   onRefresh,
@@ -88,7 +94,10 @@ export function CabinetView({
     try {
       const resp = await fetch('/api/cabinet', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify({
           medicineId: selectedMedId || undefined,
           name: name.trim(),
@@ -121,7 +130,12 @@ export function CabinetView({
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`/api/cabinet/${id}`, { method: 'DELETE' });
+      await fetch(`/api/cabinet/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
       await onRefresh();
     } catch {
       // Ignore error
@@ -167,6 +181,22 @@ export function CabinetView({
           </button>
         </div>
       </div>
+
+      {/* Guest Session Notice */}
+      {isGuest && (
+        <div className="bg-[#FEFCE8] border border-[#E7E2B8] rounded-xl px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p className="text-xs sm:text-sm text-[#4A5D52] leading-relaxed">
+            {t.auth.guestCabinetBanner}
+          </p>
+          <button
+            type="button"
+            onClick={onOpenAuth}
+            className="px-3.5 py-2 text-xs font-bold rounded-lg bg-[#15803D] text-white hover:bg-[#166534] transition-colors whitespace-nowrap shrink-0 self-start sm:self-auto"
+          >
+            {t.auth.signInUpgrade}
+          </button>
+        </div>
+      )}
 
       {/* 4-column Summary KPI Strip (single elevation, hairline divided, tabular numerals) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 bg-white border border-[#DCE5D8] rounded-xl overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-[#DCE5D8]">

@@ -5,9 +5,17 @@ import { CabinetItemModel, MedicineModel, StoreModel } from './models.ts';
 import { createInitialCabinetSeed } from './db.ts';
 
 let mongoReady = false;
+let mongoReason: 'connected' | 'missing_env' | 'placeholder_env' | 'connection_failed' = 'missing_env';
 
 export function isMongoConnected(): boolean {
   return mongoReady && mongoose.connection.readyState === 1;
+}
+
+export function getMongoStatus(): { connected: boolean; reason: string } {
+  return {
+    connected: isMongoConnected(),
+    reason: isMongoConnected() ? 'connected' : mongoReason,
+  };
 }
 
 /**
@@ -16,9 +24,14 @@ export function isMongoConnected(): boolean {
  */
 export async function connectMongoAtlas(): Promise<boolean> {
   const uri = process.env.MONGODB_URI?.trim();
-  if (!uri || uri.includes('<db_username>') || uri.includes('<db_password>')) {
-    console.log('MONGODB_URI not configured in environment; using local storage fallback.');
+  if (!uri) {
     mongoReady = false;
+    mongoReason = 'missing_env';
+    return false;
+  }
+  if (uri.includes('<db_username>') || uri.includes('<db_password>')) {
+    mongoReady = false;
+    mongoReason = 'placeholder_env';
     return false;
   }
 
@@ -28,12 +41,14 @@ export async function connectMongoAtlas(): Promise<boolean> {
       serverSelectionTimeoutMS: 8000,
     });
     mongoReady = true;
+    mongoReason = 'connected';
     console.log('Connected to MongoDB Atlas (database: dawaisamjho).');
 
     await seedIfEmpty();
     return true;
   } catch (err) {
     mongoReady = false;
+    mongoReason = 'connection_failed';
     const msg = err instanceof Error ? err.message : 'Unknown connection error';
     console.error('MongoDB Atlas connection failed; falling back to local storage:', msg);
     return false;

@@ -102,8 +102,16 @@ export interface JanAushadhiStore {
   distanceKm?: number;
 }
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string | null;
+  role: 'user' | 'guest';
+}
+
 export interface CabinetItem {
   id: string;
+  ownerId?: string;
   medicineId?: string;
   name: string;
   genericName?: string;
