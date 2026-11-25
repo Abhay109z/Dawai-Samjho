@@ -1,0 +1,64 @@
+[
+  {
+    "id": "cab-1",
+    "medicineId": "dolo-650",
+    "name": "Dolo 650",
+    "genericName": "Paracetamol Tablets IP 650 mg",
+    "salts": [
+      "Paracetamol (Acetaminophen) 650 mg"
+    ],
+    "batchNumber": "DL26A418",
+    "expiryDate": "2027-07-23",
+    "quantity": "12 Tablets left",
+    "forWhom": "Family First-Aid",
+    "dosageNote": "1 tablet after food for fever (max 3-4/day)",
+    "addedAt": "2026-11-11"
+  },
+  {
+    "id": "cab-2",
+    "medicineId": "telma-40",
+    "name": "Telma 40",
+    "genericName": "Telmisartan Tablets IP 40 mg",
+    "salts": [
+      "Telmisartan 40 mg"
+    ],
+    "batchNumber": "TM9024K",
+    "expiryDate": "2026-12-14",
+    "quantity": "8 Tablets left",
+    "forWhom": "Father (BP Daily)",
+    "dosageNote": "1 tablet every morning at 8 AM",
+    "addedAt": "2026-10-11"
+  },
+  {
+    "id": "cab-3",
+    "medicineId": "glycomet-gp-1",
+    "name": "Glycomet-GP 1",
+    "genericName": "Glimepiride 1 mg + Metformin 500 mg SR",
+    "salts": [
+      "Glimepiride 1 mg",
+      "Metformin (SR) 500 mg"
+    ],
+    "batchNumber": "GM4410B",
+    "expiryDate": "2027-04-16",
+    "quantity": "15 Tablets left",
+    "forWhom": "Mother (Diabetes)",
+    "dosageNote": "1 tablet before breakfast daily",
+    "addedAt": "2026-11-05"
+  },
+  {
+    "id": "cab-4",
+    "medicineId": "combiflam",
+    "name": "Combiflam",
+    "genericName": "Ibuprofen 400 mg + Paracetamol 325 mg",
+    "salts": [
+      "Ibuprofen 400 mg",
+      "Paracetamol 325 mg"
+    ],
+    "batchNumber": "CF1190X",
+    "expiryDate": "2026-11-07",
+    "quantity": "6 Tablets left",
+    "forWhom": "Family First-Aid",
+    "dosageNote": "For severe body ache — expired, dispose safely",
+    "addedAt": "2026-04-29"
+  }
+]

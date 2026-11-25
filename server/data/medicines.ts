@@ -1,0 +1,1116 @@
+import type { Medicine } from '../../src/types.ts';
+
+export const MEDICINES_DB: Medicine[] = [
+  {
+    id: 'dolo-650',
+    brandName: 'Dolo 650',
+    aliases: ['Dolo-650', 'Dolo 650mg', 'Paracetamol 650', 'Dolo'],
+    manufacturer: 'Micro Labs Ltd',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'fever_pain',
+    category: { en: 'Fever & Pain Relief', hi: 'बुखार और दर्द निवारक' },
+    salts: [
+      { name: 'Paracetamol (Acetaminophen)', strength: '650 mg', normalizedKey: 'paracetamol' },
+    ],
+    brandedPriceINR: 33.76,
+    genericName: 'Paracetamol Tablets IP 650 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 11.0,
+    janAushadhiCode: 'PMBJP-1042',
+    schedule: 'OTC',
+    prescriptionRequired: false,
+    summary: {
+      en: 'Commonly used to reduce fever and relieve mild-to-moderate body aches, headaches, and post-vaccination discomfort.',
+      hi: 'यह दवा बुखार कम करने और हल्के से मध्यम सिरदर्द, शरीर दर्द तथा बदन दर्द से राहत देने के लिए उपयोग की जाती है।',
+    },
+    uses: {
+      en: [
+        'Reduces high fever (antipyretic)',
+        'Relieves headache, toothache, and body ache',
+        'Eases mild joint and muscle pain',
+      ],
+      hi: [
+        'तेज बुखार कम करने में सहायक',
+        'सिरदर्द, दांत दर्द और बदन दर्द में राहत',
+        'जोड़ों और मांसपेशियों के हल्के दर्द में आराम',
+      ],
+    },
+    howToTake: {
+      en: 'Take with water after food. Maintain at least 4–6 hours between doses. Do not exceed 4 tablets (2600–4000 mg) in 24 hours unless advised by a doctor.',
+      hi: 'खाने के बाद पानी के साथ लें। दो खुराक के बीच कम से कम 4 से 6 घंटे का अंतर रखें। डॉक्टर की सलाह के बिना 24 घंटे में 4 गोलियों से अधिक न लें।',
+    },
+    sideEffects: {
+      en: ['Mild stomach upset (rare)', 'Nausea if taken on an empty stomach', 'Liver strain only on overdose'],
+      hi: ['हल्की पेट खराबी (दुर्लभ)', 'खाली पेट लेने पर जी मिचलाना', 'अधिक मात्रा लेने पर लिवर को नुकसान'],
+    },
+    precautions: {
+      en: [
+        'Avoid combining with other cold/pain tablets that also contain Paracetamol.',
+        'Avoid alcohol while taking this medicine to protect your liver.',
+        'Consult a doctor if fever persists beyond 3 days.',
+      ],
+      hi: [
+        'पैरासिटामोल युक्त किसी अन्य सर्दी या दर्द की गोली के साथ न लें।',
+        'लिवर की सुरक्षा के लिए इस दवा के साथ शराब का सेवन न करें।',
+        'यदि 3 दिन से अधिक बुखार बना रहे तो डॉक्टर से मिलें।',
+      ],
+    },
+  },
+  {
+    id: 'crocin-advance',
+    brandName: 'Crocin Advance',
+    aliases: ['Crocin 500', 'Crocin', 'Crocin Advance 500'],
+    manufacturer: 'Haleon (GSK Consumer Healthcare)',
+    packSize: { en: '20 Tablets', hi: '20 गोलियाँ' },
+    categoryKey: 'fever_pain',
+    category: { en: 'Fever & Pain Relief', hi: 'बुखार और दर्द निवारक' },
+    salts: [
+      { name: 'Paracetamol (Acetaminophen)', strength: '500 mg', normalizedKey: 'paracetamol' },
+    ],
+    brandedPriceINR: 24.0,
+    genericName: 'Paracetamol Tablets IP 500 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 7.0,
+    janAushadhiCode: 'PMBJP-0351',
+    schedule: 'OTC',
+    prescriptionRequired: false,
+    summary: {
+      en: 'Fast-release paracetamol tablet for everyday headaches, mild fever, and general aches.',
+      hi: 'सिरदर्द, हल्के बुखार और सामान्य दर्द से तेज़ राहत देने वाली पैरासिटामोल गोली।',
+    },
+    uses: {
+      en: ['Mild to moderate fever', 'Headache and migraine relief', 'Cold and flu body ache'],
+      hi: ['हल्का से मध्यम बुखार', 'सिरदर्द और माइग्रेन में राहत', 'सर्दी-जुकाम में होने वाला बदन दर्द'],
+    },
+    howToTake: {
+      en: 'Swallow whole with a glass of water, preferably after a light meal. Keep a 4–6 hour gap between doses.',
+      hi: 'हल्के भोजन के बाद एक गिलास पानी के साथ निगल लें। खुराक के बीच 4 से 6 घंटे का अंतर रखें।',
+    },
+    sideEffects: {
+      en: ['Rare skin rash', 'Mild nausea'],
+      hi: ['दुर्लभ त्वचा पर चकत्ते', 'हल्का जी मिचलाना'],
+    },
+    precautions: {
+      en: [
+        'Check other medicines for Paracetamol to avoid double dosing.',
+        'Consult a physician if you have chronic liver disease.',
+      ],
+      hi: [
+        'दोहरी खुराक से बचने के लिए दूसरी दवाओं में पैरासिटामोल की जांच करें।',
+        'यदि आपको लिवर की पुरानी बीमारी है तो डॉक्टर से परामर्श लें।',
+      ],
+    },
+  },
+  {
+    id: 'combiflam',
+    brandName: 'Combiflam',
+    aliases: ['Combiflam Tablet', 'Ibuprofen Paracetamol'],
+    manufacturer: 'Sanofi India Ltd',
+    packSize: { en: '20 Tablets', hi: '20 गोलियाँ' },
+    categoryKey: 'fever_pain',
+    category: { en: 'Fever & Pain Relief', hi: 'बुखार और दर्द निवारक' },
+    salts: [
+      { name: 'Ibuprofen', strength: '400 mg', normalizedKey: 'ibuprofen' },
+      { name: 'Paracetamol', strength: '325 mg', normalizedKey: 'paracetamol' },
+    ],
+    brandedPriceINR: 48.9,
+    genericName: 'Ibuprofen 400 mg + Paracetamol 325 mg Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 12.0,
+    janAushadhiCode: 'PMBJP-0356',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Dual-action painkiller and anti-inflammatory combining Ibuprofen and Paracetamol for stronger body pain, swelling, and fever.',
+      hi: 'इबुप्रोफेन और पैरासिटामोल का संयोजन जो तेज दर्द, सूजन, दांत दर्द और बुखार से राहत देता है।',
+    },
+    uses: {
+      en: [
+        'Relieves muscle sprain, joint pain, and swelling',
+        'Dental pain and menstrual cramps',
+        'Fever with severe body ache',
+      ],
+      hi: [
+        'मांसपेशियों के खिंचाव, जोड़ों के दर्द और सूजन में राहत',
+        'दांत दर्द और मासिक धर्म के दर्द में उपयोगी',
+        'तेज बदन दर्द के साथ बुखार में राहत',
+      ],
+    },
+    howToTake: {
+      en: 'Always take after a full meal or milk to prevent stomach irritation. Use the lowest effective dose for the shortest duration.',
+      hi: 'पेट में जलन से बचने के लिए हमेशा भोजन या दूध के बाद लें। कम से कम दिनों तक ही उपयोग करें।',
+    },
+    sideEffects: {
+      en: ['Acidity or heartburn', 'Stomach pain', 'Dizziness'],
+      hi: ['एसिडिटी या सीने में जलन', 'पेट दर्द', 'चक्कर आना'],
+    },
+    precautions: {
+      en: [
+        'Contains Paracetamol—do NOT take alongside Dolo 650 or Crocin.',
+        'Avoid if you have stomach ulcers, severe kidney disease, or asthma triggered by NSAIDs.',
+        'Can interact with blood thinners (Aspirin) and BP medicines.',
+      ],
+      hi: [
+        'इसमें पैरासिटामोल है—इसे Dolo 650 या Crocin के साथ न लें।',
+        'यदि पेट में अल्सर या किडनी की गंभीर समस्या है तो इसका सेवन न करें।',
+        'यह खून पतला करने वाली दवाओं (एस्पिरिन) और बीपी की दवाओं के साथ प्रतिक्रिया कर सकती है।',
+      ],
+    },
+  },
+  {
+    id: 'augmentin-625-duo',
+    brandName: 'Augmentin 625 Duo',
+    aliases: ['Augmentin 625', 'Augmentin', 'Moxikind CV 625', 'Clavam 625', 'Amoxyclav 625'],
+    manufacturer: 'GlaxoSmithKline Pharmaceuticals',
+    packSize: { en: '10 Tablets', hi: '10 गोलियाँ' },
+    categoryKey: 'antibiotic',
+    category: { en: 'Antibiotic', hi: 'एंटीबायोटिक (संक्रमण रोधी)' },
+    salts: [
+      { name: 'Amoxycillin', strength: '500 mg', normalizedKey: 'amoxicillin' },
+      { name: 'Clavulanic Acid', strength: '125 mg', normalizedKey: 'clavulanic_acid' },
+    ],
+    brandedPriceINR: 223.0,
+    genericName: 'Amoxycillin 500 mg + Potassium Clavulanate 125 mg Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 58.0,
+    janAushadhiCode: 'PMBJP-0008',
+    schedule: 'Schedule H1',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Broad-spectrum penicillin antibiotic used to treat bacterial infections of the throat, chest, sinus, ear, urinary tract, and skin.',
+      hi: 'यह एक एंटीबायोटिक है जो गले, सीने, कान, साइनस, मूत्र मार्ग और त्वचा के बैक्टीरियल संक्रमण के इलाज में उपयोग होती है।',
+    },
+    uses: {
+      en: [
+        'Respiratory tract and throat bacterial infections',
+        'Dental and gum infections',
+        'Skin, wound, and urinary tract infections',
+      ],
+      hi: [
+        'श्वसन तंत्र और गले के बैक्टीरियल संक्रमण',
+        'दांत और मसूड़ों का संक्रमण',
+        'त्वचा, घाव और मूत्र मार्ग (UTI) का संक्रमण',
+      ],
+    },
+    howToTake: {
+      en: 'Take at the start of a meal to reduce stomach upset. Complete the entire doctor-prescribed course (usually 5–7 days) even if you feel better.',
+      hi: 'पेट की खराबी से बचने के लिए भोजन की शुरुआत में लें। आराम मिलने के बाद भी डॉक्टर द्वारा बताया गया पूरा कोर्स (आमतौर पर 5-7 दिन) पूरा करें।',
+    },
+    sideEffects: {
+      en: ['Loose stools or mild diarrhea', 'Nausea', 'Mild skin rash'],
+      hi: ['दस्त या पेट ढीला होना', 'जी मिचलाना', 'त्वचा पर हल्के दाने'],
+    },
+    precautions: {
+      en: [
+        'Not effective for viral flu or common cold—use only on a doctor’s prescription.',
+        'Inform your doctor immediately if you are allergic to penicillin.',
+        'Stop and seek urgent medical care if severe rash or swelling occurs.',
+      ],
+      hi: [
+        'वायरल बुखार या सामान्य जुकाम में काम नहीं करती—केवल डॉक्टर की पर्ची पर ही लें।',
+        'यदि आपको पेनिसिलिन से एलर्जी है तो तुरंत डॉक्टर को बताएं।',
+        'गंभीर चकत्ते या सूजन आने पर तुरंत दवा बंद करें और डॉक्टर से संपर्क करें।',
+      ],
+    },
+  },
+  {
+    id: 'azithral-500',
+    brandName: 'Azithral 500',
+    aliases: ['Azithral', 'Azee 500', 'Azithromycin 500', 'Azi 500'],
+    manufacturer: 'Alembic Pharmaceuticals Ltd',
+    packSize: { en: '5 Tablets', hi: '5 गोलियाँ' },
+    categoryKey: 'antibiotic',
+    category: { en: 'Antibiotic', hi: 'एंटीबायोटिक (संक्रमण रोधी)' },
+    salts: [
+      { name: 'Azithromycin', strength: '500 mg', normalizedKey: 'azithromycin' },
+    ],
+    brandedPriceINR: 132.0,
+    genericName: 'Azithromycin Tablets IP 500 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 34.0,
+    janAushadhiCode: 'PMBJP-0016',
+    schedule: 'Schedule H1',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Once-daily macrolide antibiotic commonly prescribed for bacterial throat, sinus, ear, and chest infections.',
+      hi: 'दिन में एक बार ली जाने वाली एंटीबायोटिक, जो गले, साइनस, कान और फेफड़ों के बैक्टीरियल संक्रमण के इलाज में काम आती है।',
+    },
+    uses: {
+      en: ['Bacterial throat and tonsil infections', 'Bronchitis and pneumonia', 'Typhoid and certain skin infections'],
+      hi: ['गले और टॉन्सिल का बैक्टीरियल संक्रमण', 'ब्रोंकाइटिस और निमोनिया', 'टाइफाइड और कुछ त्वचा संक्रमण'],
+    },
+    howToTake: {
+      en: 'Take once daily at the same time each day, with or without food. Leave a 2-hour gap from antacids (like Digene).',
+      hi: 'प्रतिदिन एक ही समय पर दिन में एक बार लें। एंटासिड (जैसे डाइजीन) से कम से कम 2 घंटे का अंतर रखें।',
+    },
+    sideEffects: {
+      en: ['Stomach cramps', 'Loose motion', 'Mild headache'],
+      hi: ['पेट में मरोड़', 'दस्त', 'हल्का सिरदर्द'],
+    },
+    precautions: {
+      en: [
+        'Do not take antacids containing aluminium or magnesium within 2 hours.',
+        'Complete the prescribed 3-day or 5-day course.',
+        'Use with caution in heart rhythm conditions.',
+      ],
+      hi: [
+        'एल्यूमिनियम या मैग्नीशियम युक्त एंटासिड 2 घंटे के भीतर न लें।',
+        'डॉक्टर द्वारा बताया गया 3 या 5 दिन का पूरा कोर्स करें।',
+        'दिल की धड़कन की समस्या होने पर डॉक्टर को सूचित करें।',
+      ],
+    },
+  },
+  {
+    id: 'pan-d',
+    brandName: 'Pan-D',
+    aliases: ['Pan D', 'Pan-D Capsule', 'Pantocid DSR', 'Pantop D'],
+    manufacturer: 'Alkem Laboratories Ltd',
+    packSize: { en: '15 Capsules', hi: '15 कैप्सूल' },
+    categoryKey: 'acidity_gi',
+    category: { en: 'Acidity & Digestion', hi: 'एसिडिटी और पाचन' },
+    salts: [
+      { name: 'Pantoprazole', strength: '40 mg', normalizedKey: 'pantoprazole' },
+      { name: 'Domperidone', strength: '30 mg', normalizedKey: 'domperidone' },
+    ],
+    brandedPriceINR: 214.0,
+    genericName: 'Pantoprazole 40 mg + Domperidone 30 mg SR Capsules',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 35.0,
+    janAushadhiCode: 'PMBJP-0452',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Relieves acid reflux (GERD), gas, heartburn, and nausea by lowering stomach acid and improving food movement.',
+      hi: 'पेट में बनने वाले अतिरिक्त एसिड को कम करके गैस, सीने की जलन, खट्टी डकार और उल्टी की भावना से राहत देता है।',
+    },
+    uses: {
+      en: ['Acid reflux (GERD) and heartburn', 'Gastritis and bloating', 'Acidity accompanied by nausea'],
+      hi: ['एसिड रिफ्लक्स और सीने में जलन', 'गैस्ट्राइटिस और पेट फूलना', 'एसिडिटी के साथ जी मिचलाना'],
+    },
+    howToTake: {
+      en: 'Swallow whole on an empty stomach, 30 to 45 minutes before breakfast. Do not crush or chew the capsule.',
+      hi: 'सुबह नाश्ते से 30 से 45 मिनट पहले खाली पेट पूरा कैप्सूल पानी के साथ निगल लें। कैप्सूल को चबाएं या खोलें नहीं।',
+    },
+    sideEffects: {
+      en: ['Dry mouth', 'Mild headache', 'Dizziness'],
+      hi: ['मुंह सूखना', 'हल्का सिरदर्द', 'हल्का चक्कर आना'],
+    },
+    precautions: {
+      en: [
+        'Long-term daily use without medical review may lower Vitamin B12 and Magnesium levels.',
+        'Avoid combining with other PPIs like Pantocid 40 or Omez 20.',
+      ],
+      hi: [
+        'डॉक्टर की सलाह के बिना लंबे समय तक लगातार सेवन से विटामिन B12 और मैग्नीशियम की कमी हो सकती है।',
+        'Pantocid 40 या Omez 20 जैसी अन्य एसिडिटी दवाओं के साथ न लें।',
+      ],
+    },
+  },
+  {
+    id: 'pantocid-40',
+    brandName: 'Pantocid 40',
+    aliases: ['Pantocid', 'Pan 40', 'Pantop 40', 'Pantoprazole 40'],
+    manufacturer: 'Sun Pharmaceutical Industries',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'acidity_gi',
+    category: { en: 'Acidity & Digestion', hi: 'एसिडिटी और पाचन' },
+    salts: [
+      { name: 'Pantoprazole', strength: '40 mg', normalizedKey: 'pantoprazole' },
+    ],
+    brandedPriceINR: 170.0,
+    genericName: 'Pantoprazole Gastro-Resistant Tablets IP 40 mg',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 18.0,
+    janAushadhiCode: 'PMBJP-0449',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Proton pump inhibitor (PPI) that reduces excess stomach acid to treat acidity, ulcers, and heartburn.',
+      hi: 'पेट में बनने वाले एसिड को कम करने वाली दवा, जो एसिडिटी, अल्सर और सीने की जलन के इलाज में काम आती है।',
+    },
+    uses: {
+      en: ['Stomach acidity and heartburn', 'Peptic ulcers', 'Prevents stomach irritation from painkillers'],
+      hi: ['पेट की एसिडिटी और जलन', 'पेट के अल्सर का उपचार', 'दर्द निवारक दवाओं से होने वाली पेट की जलन से बचाव'],
+    },
+    howToTake: {
+      en: 'Take 1 tablet daily before breakfast on an empty stomach. Swallow whole without crushing.',
+      hi: 'रोज सुबह नाश्ते से पहले खाली पेट 1 गोली पानी के साथ साबुत निगल लें।',
+    },
+    sideEffects: {
+      en: ['Mild headache', 'Gas or bloating'],
+      hi: ['हल्का सिरदर्द', 'हल्की गैस'],
+    },
+    precautions: {
+      en: [
+        'Do not combine with Pan-D (contains the exact same Pantoprazole salt).',
+        'Maintain a gap from Thyroid (Levothyroxine) tablets.',
+      ],
+      hi: [
+        'इसे Pan-D के साथ न लें क्योंकि दोनों में पैंटोप्राज़ोल सॉल्ट होता है।',
+        'थायरॉइड की गोली (लेवोथायरोक्सिन) और इसके बीच उचित अंतर रखें।',
+      ],
+    },
+  },
+  {
+    id: 'omez-20',
+    brandName: 'Omez 20',
+    aliases: ['Omez', 'Omeprazole 20', 'Omez Capsule'],
+    manufacturer: "Dr. Reddy's Laboratories",
+    packSize: { en: '20 Capsules', hi: '20 कैप्सूल' },
+    categoryKey: 'acidity_gi',
+    category: { en: 'Acidity & Digestion', hi: 'एसिडिटी और पाचन' },
+    salts: [
+      { name: 'Omeprazole', strength: '20 mg', normalizedKey: 'omeprazole' },
+    ],
+    brandedPriceINR: 62.0,
+    genericName: 'Omeprazole Gastro-Resistant Capsules IP 20 mg',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 15.0,
+    janAushadhiCode: 'PMBJP-0442',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Widely used acid-suppressing capsule for heartburn, indigestion, and stomach ulcers.',
+      hi: 'सीने में जलन, अपच, खट्टी डकार और पेट के अल्सर में आराम देने वाला प्रचलित कैप्सूल।',
+    },
+    uses: {
+      en: ['Heartburn and sour belching', 'Acid peptic disease', 'Stomach lining protection'],
+      hi: ['सीने में जलन और खट्टी डकार', 'एसिड पेप्टिक रोग', 'पेट की अंदरूनी परत की सुरक्षा'],
+    },
+    howToTake: {
+      en: 'Take 30 minutes before morning meal on an empty stomach.',
+      hi: 'सुबह के भोजन से 30 मिनट पहले खाली पेट लें।',
+    },
+    sideEffects: {
+      en: ['Mild stomach discomfort', 'Headache'],
+      hi: ['पेट में हल्की असुविधा', 'सिरदर्द'],
+    },
+    precautions: {
+      en: [
+        'Avoid taking alongside blood thinner Clopidogrel without doctor advice.',
+        'Do not pair with other acid-suppressing PPIs like Pantoprazole.',
+      ],
+      hi: [
+        'डॉक्टर की सलाह के बिना क्लोपिडोग्रेल (खून पतला करने की दवा) के साथ न लें।',
+        'पैंटोप्राज़ोल जैसी अन्य एसिडिटी दवा के साथ न लें।',
+      ],
+    },
+  },
+  {
+    id: 'digene',
+    brandName: 'Digene Tablets',
+    aliases: ['Digene', 'Digene Mint', 'Antacid Tablet'],
+    manufacturer: 'Abbott India Ltd',
+    packSize: { en: '15 Chewable Tablets', hi: '15 चबाने वाली गोलियाँ' },
+    categoryKey: 'acidity_gi',
+    category: { en: 'Acidity & Digestion', hi: 'एसिडिटी और पाचन' },
+    salts: [
+      { name: 'Magnesium Hydroxide', strength: '25 mg', normalizedKey: 'antacid_mineral' },
+      { name: 'Aluminium Hydroxide', strength: '300 mg', normalizedKey: 'antacid_mineral' },
+      { name: 'Simethicone', strength: '25 mg', normalizedKey: 'simethicone' },
+    ],
+    brandedPriceINR: 28.0,
+    genericName: 'Dried Aluminium Hydroxide + Magnesium + Simethicone Chewable Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 9.0,
+    janAushadhiCode: 'PMBJP-0438',
+    schedule: 'OTC',
+    prescriptionRequired: false,
+    summary: {
+      en: 'Fast-acting chewable antacid that neutralizes stomach acid immediately for quick relief from gas and heartburn.',
+      hi: 'तुरंत असर करने वाली चबाने वाली एंटासिड गोली जो पेट की जलन और गैस से शीघ्र आराम दिलाती है।',
+    },
+    uses: {
+      en: ['Instant relief from acidity and gas', 'Bloating after heavy meals', 'Sour stomach'],
+      hi: ['एसिडिटी और गैस से तुरंत राहत', 'भारी भोजन के बाद पेट फूलना', 'पेट में खट्टापन और जलन'],
+    },
+    howToTake: {
+      en: 'Chew 1–2 tablets thoroughly after meals or when acidity occurs. Do not swallow whole.',
+      hi: 'भोजन के बाद या एसिडिटी होने पर 1–2 गोलियाँ अच्छी तरह चबाकर खाएं। साबुत न निगलें।',
+    },
+    sideEffects: {
+      en: ['Chalky taste', 'Mild constipation or loose stool on overuse'],
+      hi: ['मुंह में चॉक जैसा स्वाद', 'अधिक उपयोग पर कब्ज या दस्त'],
+    },
+    precautions: {
+      en: [
+        'Keep at least a 2-hour gap from antibiotics (Azithromycin, Norfloxacin) and Thyroid tablets.',
+        'Avoid frequent use if you have severe kidney disease.',
+      ],
+      hi: [
+        'एंटीबायोटिक (एज़िथ्रोमाइसिन, नॉरफ्लॉक्स) और थायरॉइड की दवाओं से कम से कम 2 घंटे का अंतर रखें।',
+        'किडनी की गंभीर बीमारी होने पर नियमित सेवन से बचें।',
+      ],
+    },
+  },
+  {
+    id: 'telma-40',
+    brandName: 'Telma 40',
+    aliases: ['Telma', 'Telmikind 40', 'Telmisartan 40', 'Tazloc 40'],
+    manufacturer: 'Glenmark Pharmaceuticals',
+    packSize: { en: '30 Tablets', hi: '30 गोलियाँ' },
+    categoryKey: 'blood_pressure',
+    category: { en: 'Blood Pressure (Hypertension)', hi: 'उच्च रक्तचाप (बीपी)' },
+    salts: [
+      { name: 'Telmisartan', strength: '40 mg', normalizedKey: 'telmisartan' },
+    ],
+    brandedPriceINR: 345.0,
+    genericName: 'Telmisartan Tablets IP 40 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 28.0,
+    janAushadhiCode: 'PMBJP-0192',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Daily blood pressure medicine that relaxes blood vessels so blood flows smoothly, protecting the heart and kidneys.',
+      hi: 'उच्च रक्तचाप (हाई बीपी) को नियंत्रित करने की दैनिक दवा, जो रक्त वाहिकाओं को आराम देकर दिल और किडनी की रक्षा करती है।',
+    },
+    uses: {
+      en: ['Controls high blood pressure', 'Reduces risk of stroke and heart attack', 'Protects kidneys in diabetic patients'],
+      hi: ['उच्च रक्तचाप को नियंत्रित करना', 'हार्ट अटैक और स्ट्रोक का खतरा कम करना', 'डायबिटीज रोगियों में किडनी की सुरक्षा'],
+    },
+    howToTake: {
+      en: 'Take once daily at the same time every morning, with or without food. Do not stop suddenly even if BP looks normal.',
+      hi: 'प्रतिदिन सुबह एक ही समय पर भोजन के साथ या बिना लें। बीपी सामान्य दिखने पर भी डॉक्टर से पूछे बिना दवा बंद न करें।',
+    },
+    sideEffects: {
+      en: ['Mild dizziness when standing up quickly', 'Fatigue', 'Elevated potassium levels (monitored via blood test)'],
+      hi: ['अचानक उठने पर हल्का चक्कर आना', 'हल्की थकान', 'पोटैशियम का स्तर बढ़ना'],
+    },
+    precautions: {
+      en: [
+        'Frequent use of NSAID painkillers (Ibuprofen, Diclofenac) can reduce BP control and strain kidneys.',
+        'Strictly avoid during pregnancy.',
+        'Monitor blood pressure and kidney function periodically.',
+      ],
+      hi: [
+        'इबुप्रोफेन या डिक्लोफेनाक जैसी दर्द निवारक दवाओं का अधिक सेवन बीपी नियंत्रण को कम कर सकता है और किडनी पर दबाव डाल सकता है।',
+        'गर्भावस्था में इस दवा का सेवन बिल्कुल न करें।',
+        'समय-समय पर बीपी और किडनी की जांच करवाते रहें।',
+      ],
+    },
+  },
+  {
+    id: 'amlokind-5',
+    brandName: 'Amlokind 5',
+    aliases: ['Amlokind', 'Amlong 5', 'Amlodipine 5', 'Stamlo 5'],
+    manufacturer: 'Mankind Pharma Ltd',
+    packSize: { en: '10 Tablets', hi: '10 गोलियाँ' },
+    categoryKey: 'blood_pressure',
+    category: { en: 'Blood Pressure (Hypertension)', hi: 'उच्च रक्तचाप (बीपी)' },
+    salts: [
+      { name: 'Amlodipine', strength: '5 mg', normalizedKey: 'amlodipine' },
+    ],
+    brandedPriceINR: 32.0,
+    genericName: 'Amlodipine Tablets IP 5 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 7.0,
+    janAushadhiCode: 'PMBJP-0148',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Calcium channel blocker used daily to lower high blood pressure and prevent chest pain (angina).',
+      hi: 'हाई बीपी को कम करने और सीने के दर्द (एंजाइना) से बचाव के लिए प्रतिदिन ली जाने वाली दवा।',
+    },
+    uses: {
+      en: ['High blood pressure control', 'Prevents heart-related chest pain (angina)'],
+      hi: ['उच्च रक्तचाप का नियंत्रण', 'हृदय संबंधी सीने के दर्द की रोकथाम'],
+    },
+    howToTake: {
+      en: 'Take once daily at a fixed time with water, before or after meals.',
+      hi: 'प्रतिदिन एक निश्चित समय पर पानी के साथ लें (खाने से पहले या बाद में)।',
+    },
+    sideEffects: {
+      en: ['Mild ankle or foot swelling', 'Flushing or warmth', 'Mild sleepiness'],
+      hi: ['टखनों या पैरों में हल्की सूजन', 'चेहरे पर हल्की गर्माहट', 'हल्की नींद आना'],
+    },
+    precautions: {
+      en: [
+        'Rise slowly from a sitting or lying position to avoid lightheadedness.',
+        'Do not discontinue without consulting your doctor.',
+      ],
+      hi: [
+        'चक्कर से बचने के लिए बैठकर या लेटकर धीरे-धीरे उठें।',
+        'डॉक्टर की सलाह के बिना दवा बंद न करें।',
+      ],
+    },
+  },
+  {
+    id: 'glycomet-gp-1',
+    brandName: 'Glycomet-GP 1',
+    aliases: ['Glycomet GP1', 'Glycomet GP 1', 'Amaryl M1', 'Glimestar M1'],
+    manufacturer: 'USV Private Limited',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'diabetes',
+    category: { en: 'Diabetes (Blood Sugar)', hi: 'मधुमेह (शुगर नियंत्रण)' },
+    salts: [
+      { name: 'Glimepiride', strength: '1 mg', normalizedKey: 'glimepiride' },
+      { name: 'Metformin (SR)', strength: '500 mg', normalizedKey: 'metformin' },
+    ],
+    brandedPriceINR: 156.0,
+    genericName: 'Glimepiride 1 mg + Metformin 500 mg SR Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 24.0,
+    janAushadhiCode: 'PMBJP-0295',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Combination anti-diabetic tablet that helps control blood sugar in Type 2 Diabetes by increasing insulin release and improving insulin sensitivity.',
+      hi: 'टाइप-2 डायबिटीज में ब्लड शुगर को नियंत्रित करने वाली संयोजन दवा, जो शरीर में इंसुलिन की कार्यक्षमता बढ़ाती है।',
+    },
+    uses: {
+      en: ['Controls fasting and post-meal blood sugar in Type 2 Diabetes', 'Reduces long-term diabetic complications'],
+      hi: ['टाइप-2 डायबिटीज में खाली पेट और भोजन के बाद शुगर नियंत्रण', 'डायबिटीज से होने वाली जटिलताओं से बचाव'],
+    },
+    howToTake: {
+      en: 'Take immediately before or with your first main meal (breakfast). Never skip meals after taking this tablet.',
+      hi: 'सुबह के मुख्य भोजन (नाश्ते) के साथ या ठीक पहले लें। यह गोली लेने के बाद कभी भोजन न छोड़ें।',
+    },
+    sideEffects: {
+      en: ['Low blood sugar (sweating, trembling, hunger) if meals are skipped', 'Mild nausea or metallic taste'],
+      hi: ['भोजन छोड़ने पर लो ब्लड शुगर (पसीना, कंपकंपी, भूख लगना)', 'हल्का जी मिचलाना'],
+    },
+    precautions: {
+      en: [
+        'Always carry a small sweet/glucose source in case of low blood sugar.',
+        'Do not combine with plain Metformin (Glycomet 500) unless specifically prescribed—risk of duplicate Metformin.',
+        'Avoid excessive alcohol intake.',
+      ],
+      hi: [
+        'लो शुगर की स्थिति के लिए हमेशा अपने पास थोड़ा ग्लूकोज या मीठा रखें।',
+        'डॉक्टर के कहे बिना अलग से मेटफॉर्मिन (Glycomet 500) न लें—दोहरी मात्रा का खतरा।',
+        'शराब के सेवन से बचें।',
+      ],
+    },
+  },
+  {
+    id: 'glycomet-500',
+    brandName: 'Glycomet 500 SR',
+    aliases: ['Glycomet 500', 'Metformin 500', 'Cetapin XR 500'],
+    manufacturer: 'USV Private Limited',
+    packSize: { en: '20 Tablets', hi: '20 गोलियाँ' },
+    categoryKey: 'diabetes',
+    category: { en: 'Diabetes (Blood Sugar)', hi: 'मधुमेह (शुगर नियंत्रण)' },
+    salts: [
+      { name: 'Metformin (Sustained Release)', strength: '500 mg', normalizedKey: 'metformin' },
+    ],
+    brandedPriceINR: 49.0,
+    genericName: 'Metformin Hydrochloride SR Tablets IP 500 mg',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 13.0,
+    janAushadhiCode: 'PMBJP-0288',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'First-line diabetes medicine that lowers sugar production in the liver and helps the body respond better to insulin.',
+      hi: 'डायबिटीज की प्राथमिक दवा जो लिवर द्वारा अतिरिक्त शुगर बनाने को रोकती है और शरीर में इंसुलिन का असर बेहतर करती है।',
+    },
+    uses: {
+      en: ['Type 2 Diabetes blood sugar management', 'PCOS insulin resistance support (when prescribed)'],
+      hi: ['टाइप-2 डायबिटीज में ब्लड शुगर नियंत्रण', 'डॉक्टर की सलाह पर PCOS में इंसुलिन संतुलन'],
+    },
+    howToTake: {
+      en: 'Swallow whole with or right after meals. Do not crush sustained-release tablets.',
+      hi: 'भोजन के साथ या तुरंत बाद पानी के साथ साबुत निगलें। गोली को तोड़ें या चबाएं नहीं।',
+    },
+    sideEffects: {
+      en: ['Mild stomach upset during first week', 'Metallic taste', 'Vitamin B12 dip on multi-year use'],
+      hi: ['शुरुआती सप्ताह में पेट की हल्की खराबी', 'मुंह का स्वाद बदलना', 'लंबे समय तक लेने पर विटामिन B12 की कमी'],
+    },
+    precautions: {
+      en: [
+        'Check if your combination diabetes pill already contains Metformin.',
+        'Stay well hydrated and monitor kidney function annually.',
+      ],
+      hi: [
+        'जांच लें कि आपकी दूसरी शुगर की दवा में पहले से मेटफॉर्मिन तो नहीं है।',
+        'पर्याप्त पानी पिएं और साल में एक बार किडनी की जांच करवाएं।',
+      ],
+    },
+  },
+  {
+    id: 'ecosprin-75',
+    brandName: 'Ecosprin 75',
+    aliases: ['Ecosprin', 'Aspirin 75', 'Loprin 75', 'Ecosprin 75mg'],
+    manufacturer: 'USV Private Limited',
+    packSize: { en: '14 Tablets', hi: '14 गोलियाँ' },
+    categoryKey: 'heart_blood',
+    category: { en: 'Heart & Blood Thinner', hi: 'हृदय और खून पतला करने की दवा' },
+    salts: [
+      { name: 'Aspirin (Acetylsalicylic Acid)', strength: '75 mg', normalizedKey: 'aspirin' },
+    ],
+    brandedPriceINR: 5.5,
+    genericName: 'Aspirin Gastro-Resistant Tablets IP 75 mg',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 3.5,
+    janAushadhiCode: 'PMBJP-0162',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Low-dose blood thinner (antiplatelet) prescribed to prevent dangerous blood clots, heart attacks, and strokes.',
+      hi: 'कम खुराक वाली खून पतला करने की दवा, जो खून के थक्के जमने से रोककर हार्ट अटैक और स्ट्रोक से बचाती है।',
+    },
+    uses: {
+      en: ['Prevents heart attack and ischemic stroke', 'Post-angioplasty / stent clot prevention'],
+      hi: ['हार्ट अटैक और स्ट्रोक की रोकथाम', 'एंजियोप्लास्टी/स्टेंट के बाद थक्के बनने से बचाव'],
+    },
+    howToTake: {
+      en: 'Swallow whole with water after a meal, usually after lunch or dinner as prescribed.',
+      hi: 'डॉक्टर के निर्देशानुसार दोपहर या रात के भोजन के बाद पानी के साथ साबुत निगलें।',
+    },
+    sideEffects: {
+      en: ['Mild acidity', 'Easy bruising or slower stoppage of minor cuts'],
+      hi: ['हल्की एसिडिटी', 'छोटी चोट लगने पर खून देर से रुकना'],
+    },
+    precautions: {
+      en: [
+        'Avoid taking Ibuprofen (Combiflam / Brufen) or Diclofenac (Voveran) without medical guidance—increases stomach bleeding risk and lowers heart protection.',
+        'Inform your dentist or surgeon before any procedure.',
+      ],
+      hi: [
+        'डॉक्टर की सलाह के बिना इबुप्रोफेन (Combiflam/Brufen) या डिक्लोफेनाक (Voveran) न लें—इससे पेट में रक्तस्राव का खतरा बढ़ता है।',
+        'किसी भी ऑपरेशन या दांत के इलाज से पहले डॉक्टर को इसके बारे में बताएं।',
+      ],
+    },
+  },
+  {
+    id: 'atorva-10',
+    brandName: 'Atorva 10',
+    aliases: ['Atorva', 'Lipitor 10', 'Atorvastatin 10', 'Tonact 10'],
+    manufacturer: 'Zydus Cadila',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'thyroid_cholesterol',
+    category: { en: 'Cholesterol & Thyroid', hi: 'कोलेस्ट्रॉल और थायरॉइड' },
+    salts: [
+      { name: 'Atorvastatin', strength: '10 mg', normalizedKey: 'atorvastatin' },
+    ],
+    brandedPriceINR: 108.0,
+    genericName: 'Atorvastatin Tablets IP 10 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 14.0,
+    janAushadhiCode: 'PMBJP-0166',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Statin medicine that lowers bad cholesterol (LDL) and triglycerides to keep heart arteries clear.',
+      hi: 'खराब कोलेस्ट्रॉल (LDL) और ट्राइग्लिसराइड्स को कम करने की दवा, जो दिल की नसों को साफ रखने में मदद करती है।',
+    },
+    uses: {
+      en: ['Lowers high LDL cholesterol', 'Reduces heart disease and stroke risk'],
+      hi: ['उच्च LDL कोलेस्ट्रॉल को कम करना', 'हृदय रोग और स्ट्रोक के खतरे को कम करना'],
+    },
+    howToTake: {
+      en: 'Take once daily, usually at night after dinner, with water.',
+      hi: 'रोज एक बार, आमतौर पर रात के भोजन के बाद पानी के साथ लें।',
+    },
+    sideEffects: {
+      en: ['Mild muscle ache', 'Mild indigestion'],
+      hi: ['मांसपेशियों में हल्का दर्द', 'हल्की अपच'],
+    },
+    precautions: {
+      en: [
+        'Report unexplained severe muscle pain or dark urine to your doctor.',
+        'Avoid heavy alcohol consumption and check liver enzymes periodically.',
+      ],
+      hi: [
+        'अकारण तेज मांसपेशियों में दर्द होने पर डॉक्टर को बताएं।',
+        'अधिक शराब से बचें और समय-समय पर लिवर की जांच करवाएं।',
+      ],
+    },
+  },
+  {
+    id: 'allegra-120',
+    brandName: 'Allegra 120',
+    aliases: ['Allegra', 'Fexofenadine 120', 'Allegra 120mg'],
+    manufacturer: 'Sanofi India Ltd',
+    packSize: { en: '10 Tablets', hi: '10 गोलियाँ' },
+    categoryKey: 'allergy_cold',
+    category: { en: 'Allergy & Cold', hi: 'एलर्जी और जुकाम' },
+    salts: [
+      { name: 'Fexofenadine Hydrochloride', strength: '120 mg', normalizedKey: 'fexofenadine' },
+    ],
+    brandedPriceINR: 235.0,
+    genericName: 'Fexofenadine Hydrochloride Tablets IP 120 mg',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 32.0,
+    janAushadhiCode: 'PMBJP-0612',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Non-drowsy anti-allergy tablet for sneezing, runny nose, itchy eyes, and skin hives.',
+      hi: 'बिना नींद लाए छींक, बहती नाक, आंखों में खुजली और त्वचा की एलर्जी से राहत देने वाली दवा।',
+    },
+    uses: {
+      en: ['Seasonal dust and pollen allergies', 'Sneezing, watery eyes, and runny nose', 'Skin itching and hives'],
+      hi: ['धूल और मौसमी एलर्जी', 'छींक आना, नाक बहना और आंखों से पानी आना', 'त्वचा पर खुजली और पित्ती'],
+    },
+    howToTake: {
+      en: 'Take with plain water (avoid fruit juices like orange/apple juice which reduce absorption).',
+      hi: 'सादे पानी के साथ लें (संतरे या सेब के जूस के साथ न लें क्योंकि इससे दवा का असर कम होता है)।',
+    },
+    sideEffects: {
+      en: ['Mild headache', 'Rare drowsiness'],
+      hi: ['हल्का सिरदर्द', 'बहुत कम मामलों में हल्की सुस्ती'],
+    },
+    precautions: {
+      en: [
+        'Leave a 2-hour gap from antacids like Digene.',
+        'Avoid taking alongside other antihistamines like Cetirizine or Montair LC unless advised.',
+      ],
+      hi: [
+        'डाइजीन जैसे एंटासिड से 2 घंटे का अंतर रखें।',
+        'डॉक्टर की सलाह के बिना सेटिरिज़िन या मोंटेयर एलसी के साथ न लें।',
+      ],
+    },
+  },
+  {
+    id: 'montair-lc',
+    brandName: 'Montair LC',
+    aliases: ['Montair-LC', 'Montek LC', 'Montelukast Levocetirizine'],
+    manufacturer: 'Cipla Ltd',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'allergy_cold',
+    category: { en: 'Allergy & Cold', hi: 'एलर्जी और जुकाम' },
+    salts: [
+      { name: 'Montelukast', strength: '10 mg', normalizedKey: 'montelukast' },
+      { name: 'Levocetirizine', strength: '5 mg', normalizedKey: 'levocetirizine' },
+    ],
+    brandedPriceINR: 330.0,
+    genericName: 'Montelukast 10 mg + Levocetirizine 5 mg Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 36.0,
+    janAushadhiCode: 'PMBJP-0624',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Dual allergy and airway-relief medicine used for chronic allergic rhinitis, blocked nose, and allergy-induced wheezing.',
+      hi: 'पुरानी एलर्जी, बंद नाक, छींक और एलर्जी से होने वाली सांस की तकलीफ में राहत देने वाली दोहरी दवा।',
+    },
+    uses: {
+      en: ['Allergic cold, sneezing, and nasal congestion', 'Preventive relief in allergic asthma'],
+      hi: ['एलर्जी से होने वाला जुकाम, छींक और बंद नाक', 'एलर्जिक अस्थमा के लक्षणों से राहत'],
+    },
+    howToTake: {
+      en: 'Take 1 tablet in the evening or at bedtime, as Levocetirizine can cause mild drowsiness.',
+      hi: 'शाम या रात को सोने से पहले 1 गोली लें क्योंकि इससे हल्की नींद आ सकती है।',
+    },
+    sideEffects: {
+      en: ['Mild drowsiness', 'Dry mouth', 'Fatigue'],
+      hi: ['हल्की नींद आना', 'मुंह सूखना', 'थकान'],
+    },
+    precautions: {
+      en: [
+        'Avoid driving if you feel sleepy after taking it.',
+        'Do not combine with Okacet/Cetirizine tablets to prevent excess sedation.',
+      ],
+      hi: [
+        'यदि नींद महसूस हो तो वाहन न चलाएं।',
+        'अधिक सुस्ती से बचने के लिए इसे Okacet या Cetirizine के साथ न लें।',
+      ],
+    },
+  },
+  {
+    id: 'okacet',
+    brandName: 'Okacet (Cetirizine 10)',
+    aliases: ['Okacet', 'Cetirizine', 'Cetzine 10', 'Alerid'],
+    manufacturer: 'Cipla Ltd',
+    packSize: { en: '10 Tablets', hi: '10 गोलियाँ' },
+    categoryKey: 'allergy_cold',
+    category: { en: 'Allergy & Cold', hi: 'एलर्जी और जुकाम' },
+    salts: [
+      { name: 'Cetirizine Hydrochloride', strength: '10 mg', normalizedKey: 'cetirizine' },
+    ],
+    brandedPriceINR: 22.0,
+    genericName: 'Cetirizine Tablets IP 10 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 5.5,
+    janAushadhiCode: 'PMBJP-0604',
+    schedule: 'Schedule H',
+    prescriptionRequired: false,
+    summary: {
+      en: 'Affordable antihistamine tablet for quick relief from runny nose, sneezing, insect bites, and allergic skin itching.',
+      hi: 'बहती नाक, छींक, कीड़े के काटने और त्वचा की खुजली से तुरंत राहत देने वाली किफायती एलर्जी की दवा।',
+    },
+    uses: {
+      en: ['Cold allergy and sneezing', 'Itchy rashes and hives'],
+      hi: ['जुकाम की एलर्जी और छींक', 'खुजली वाले दाने और पित्ती'],
+    },
+    howToTake: {
+      en: 'Best taken at night with water due to possible mild sleepiness.',
+      hi: 'हल्की नींद आने की संभावना के कारण रात को पानी के साथ लेना बेहतर है।',
+    },
+    sideEffects: {
+      en: ['Drowsiness', 'Dry mouth'],
+      hi: ['नींद या सुस्ती', 'मुंह सूखना'],
+    },
+    precautions: {
+      en: ['Avoid alcohol and heavy machinery operation if drowsy.'],
+      hi: ['शराब से बचें और नींद आने पर भारी मशीन या गाड़ी न चलाएं।'],
+    },
+  },
+  {
+    id: 'shelcal-500',
+    brandName: 'Shelcal 500',
+    aliases: ['Shelcal', 'Calcium 500', 'Gemcal', 'Shelcal HD'],
+    manufacturer: 'Torrent Pharmaceuticals Ltd',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'vitamins_calcium',
+    category: { en: 'Vitamins & Calcium', hi: 'विटामिन और कैल्शियम' },
+    salts: [
+      { name: 'Elemental Calcium', strength: '500 mg', normalizedKey: 'calcium' },
+      { name: 'Vitamin D3 (Cholecalciferol)', strength: '250 IU', normalizedKey: 'vitamin_d3' },
+    ],
+    brandedPriceINR: 144.0,
+    genericName: 'Calcium 500 mg + Vitamin D3 250 IU Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 22.0,
+    janAushadhiCode: 'PMBJP-0718',
+    schedule: 'OTC',
+    prescriptionRequired: false,
+    summary: {
+      en: 'Calcium and Vitamin D3 supplement to strengthen bones, teeth, and joints, especially useful for seniors and women.',
+      hi: 'हड्डियों, दांतों और जोड़ों को मजबूत बनाने के लिए कैल्शियम और विटामिन D3 का सप्लीमेंट, विशेषकर बुजुर्गों और महिलाओं के लिए उपयोगी।',
+    },
+    uses: {
+      en: ['Prevents and treats calcium deficiency', 'Supports bone strength in osteoporosis and aging'],
+      hi: ['कैल्शियम की कमी को दूर करना', 'बुजुर्गों और ऑस्टियोपोरोसिस में हड्डियों की मजबूती'],
+    },
+    howToTake: {
+      en: 'Take after lunch or dinner with a full glass of water for best absorption.',
+      hi: 'बेहतर अवशोषण के लिए दोपहर या रात के भोजन के बाद एक गिलास पानी के साथ लें।',
+    },
+    sideEffects: {
+      en: ['Mild constipation or gas'],
+      hi: ['हल्का कब्ज या गैस'],
+    },
+    precautions: {
+      en: [
+        'Keep at least a 4-hour gap from Thyroid (Thyronorm) tablets and 2 hours from antibiotics.',
+        'Consult a doctor if you have a history of kidney stones.',
+      ],
+      hi: [
+        'थायरॉइड (Thyronorm) की गोली से कम से कम 4 घंटे और एंटीबायोटिक से 2 घंटे का अंतर रखें।',
+        'यदि गुर्दे की पथरी (किडनी स्टोन) का इतिहास है तो डॉक्टर से पूछें।',
+      ],
+    },
+  },
+  {
+    id: 'thyronorm-50',
+    brandName: 'Thyronorm 50 mcg',
+    aliases: ['Thyronorm 50', 'Thyronorm', 'Eltroxin 50', 'Levothyroxine 50'],
+    manufacturer: 'Abbott India Ltd',
+    packSize: { en: '120 Tablets', hi: '120 गोलियाँ' },
+    categoryKey: 'thyroid_cholesterol',
+    category: { en: 'Cholesterol & Thyroid', hi: 'कोलेस्ट्रॉल और थायरॉइड' },
+    salts: [
+      { name: 'Levothyroxine Sodium', strength: '50 mcg', normalizedKey: 'levothyroxine' },
+    ],
+    brandedPriceINR: 215.0,
+    genericName: 'Thyroxine Sodium Tablets IP 50 mcg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 62.0,
+    janAushadhiCode: 'PMBJP-0512',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Thyroid hormone replacement tablet for hypothyroidism, restoring normal energy, metabolism, and weight balance.',
+      hi: 'हाइपोथायरॉइडिज्म (थायरॉइड की कमी) के इलाज की दवा, जो शरीर की ऊर्जा और मेटाबॉलिज्म को संतुलित रखती है।',
+    },
+    uses: {
+      en: ['Treats underactive thyroid (hypothyroidism)', 'Relieves fatigue, weight gain, and cold sensitivity'],
+      hi: ['कम सक्रिय थायरॉइड (हाइपोथायरॉइडिज्म) का इलाज', 'थकान और वजन बढ़ने की समस्या को नियंत्रित करना'],
+    },
+    howToTake: {
+      en: 'Take first thing in the morning on an empty stomach with plain water. Wait 45–60 minutes before tea, coffee, or breakfast.',
+      hi: 'सुबह उठते ही खाली पेट सादे पानी के साथ लें। चाय, कॉफी या नाश्ते के लिए 45 से 60 मिनट इंतजार करें।',
+    },
+    sideEffects: {
+      en: ['Palpitations or restlessness only if dose is too high'],
+      hi: ['खुराक अधिक होने पर ही घबराहट या दिल की धड़कन तेज होना'],
+    },
+    precautions: {
+      en: [
+        'Never take at the same time as Calcium (Shelcal), Iron, or Antacids (Digene)—keep a 4-hour gap.',
+        'Check TSH blood test every 3–6 months as advised.',
+      ],
+      hi: [
+        'कैल्शियम (Shelcal), आयरन या एंटासिड (Digene) के साथ कभी न लें—कम से कम 4 घंटे का अंतर रखें।',
+        'डॉक्टर के अनुसार हर 3 से 6 महीने में TSH जांच करवाएं।',
+      ],
+    },
+  },
+  {
+    id: 'voveran-sr-100',
+    brandName: 'Voveran SR 100',
+    aliases: ['Voveran', 'Diclofenac 100', 'Voveran 50', 'Reactin SR'],
+    manufacturer: 'Novartis India Ltd',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'fever_pain',
+    category: { en: 'Fever & Pain Relief', hi: 'बुखार और दर्द निवारक' },
+    salts: [
+      { name: 'Diclofenac Sodium (SR)', strength: '100 mg', normalizedKey: 'diclofenac' },
+    ],
+    brandedPriceINR: 196.0,
+    genericName: 'Diclofenac Sodium SR Tablets IP 100 mg',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 16.0,
+    janAushadhiCode: 'PMBJP-0341',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Strong anti-inflammatory painkiller for arthritis, severe back pain, joint stiffness, and post-injury swelling.',
+      hi: 'गठिया, तेज पीठ दर्द, जोड़ों की अकड़न और चोट की सूजन के लिए प्रभावी दर्द निवारक दवा।',
+    },
+    uses: {
+      en: ['Osteoarthritis and rheumatoid joint pain', 'Acute lower back and neck sprain', 'Post-injury swelling'],
+      hi: ['गठिया और जोड़ों का तेज दर्द', 'कमर और गर्दन की मोच', 'चोट के बाद होने वाली सूजन'],
+    },
+    howToTake: {
+      en: 'Swallow whole after a heavy meal. Never crush sustained-release tablets.',
+      hi: 'भोजन के बाद पानी के साथ साबुत निगलें। गोली को तोड़ें या चबाएं नहीं।',
+    },
+    sideEffects: {
+      en: ['Stomach acidity or pain', 'Fluid retention', 'Kidney strain on prolonged use'],
+      hi: ['पेट में एसिडिटी या दर्द', 'शरीर में हल्की सूजन', 'लंबे समय तक लेने पर किडनी पर असर'],
+    },
+    precautions: {
+      en: [
+        'Avoid combining with Combiflam (Ibuprofen) or Ecosprin (Aspirin)—high risk of stomach bleeding.',
+        'Use cautiously if you take BP medicines (Telma 40) or have kidney/heart disease.',
+      ],
+      hi: [
+        'Combiflam (इबुप्रोफेन) या Ecosprin (एस्पिरिन) के साथ न लें—पेट में रक्तस्राव का खतरा बढ़ जाता है।',
+        'यदि आप बीपी (Telma 40), हृदय या किडनी के मरीज हैं तो डॉक्टर से पूछकर ही लें।',
+      ],
+    },
+  },
+  {
+    id: 'metrogyl-400',
+    brandName: 'Metrogyl 400',
+    aliases: ['Metrogyl', 'Metronidazole 400', 'Flagyl 400'],
+    manufacturer: 'JB Chemicals & Pharmaceuticals',
+    packSize: { en: '15 Tablets', hi: '15 गोलियाँ' },
+    categoryKey: 'antibiotic',
+    category: { en: 'Antibiotic', hi: 'एंटीबायोटिक (संक्रमण रोधी)' },
+    salts: [
+      { name: 'Metronidazole', strength: '400 mg', normalizedKey: 'metronidazole' },
+    ],
+    brandedPriceINR: 26.5,
+    genericName: 'Metronidazole Tablets IP 400 mg (Jan Aushadhi)',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 11.0,
+    janAushadhiCode: 'PMBJP-0054',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Antibiotic and antiprotozoal medicine used for stomach infections, amoebic dysentery, and dental gum infections.',
+      hi: 'पेट के संक्रमण, पेचिश (अमीबियासिस) और दांतों-मसूड़ों के संक्रमण के इलाज में उपयोग होने वाली दवा।',
+    },
+    uses: {
+      en: ['Stomach and intestinal bacterial/parasitic infections', 'Dental and gum infections', 'Loose stools with cramps'],
+      hi: ['पेट और आंतों का संक्रमण', 'दांतों और मसूड़ों का संक्रमण', 'मरोड़ के साथ होने वाले दस्त'],
+    },
+    howToTake: {
+      en: 'Take after meals with water. Complete the prescribed duration.',
+      hi: 'भोजन के बाद पानी के साथ लें और पूरा कोर्स पूरा करें।',
+    },
+    sideEffects: {
+      en: ['Bitter or metallic taste in mouth', 'Nausea', 'Dark-colored urine (harmless)'],
+      hi: ['मुंह में कड़वा या धातु जैसा स्वाद', 'जी मिचलाना', 'पेशाब का रंग गहरा होना'],
+    },
+    precautions: {
+      en: [
+        'Strictly avoid ALL alcohol during treatment and for 48 hours after finishing—causes severe vomiting and flushing.',
+      ],
+      hi: [
+        'इलाज के दौरान और दवा खत्म होने के 48 घंटे बाद तक शराब बिल्कुल न पिएं—इससे तेज उल्टी और घबराहट हो सकती है।',
+      ],
+    },
+  },
+  {
+    id: 'becosules',
+    brandName: 'Becosules Capsules',
+    aliases: ['Becosules', 'Becosules Z', 'Vitamin B Complex'],
+    manufacturer: 'Pfizer Ltd',
+    packSize: { en: '20 Capsules', hi: '20 कैप्सूल' },
+    categoryKey: 'vitamins_calcium',
+    category: { en: 'Vitamins & Calcium', hi: 'विटामिन और कैल्शियम' },
+    salts: [
+      { name: 'Vitamin B-Complex Forte', strength: 'Multi-B', normalizedKey: 'vitamin_b_complex' },
+      { name: 'Vitamin C (Ascorbic Acid)', strength: '150 mg', normalizedKey: 'vitamin_c' },
+    ],
+    brandedPriceINR: 56.0,
+    genericName: 'Vitamin B-Complex Forte with Vitamin C Capsules',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 18.0,
+    janAushadhiCode: 'PMBJP-0704',
+    schedule: 'OTC',
+    prescriptionRequired: false,
+    summary: {
+      en: 'Daily B-Complex and Vitamin C supplement for mouth ulcers, general weakness, recovery after illness, and nerve health.',
+      hi: 'मुंह के छाले, सामान्य कमजोरी, बीमारी के बाद की थकान और नसों के स्वास्थ्य के लिए विटामिन B-कॉम्प्लेक्स और विटामिन C कैप्सूल।',
+    },
+    uses: {
+      en: ['Mouth ulcers and tongue soreness', 'Fatigue and post-antibiotic recovery', 'Supports skin and nerve health'],
+      hi: ['मुंह के छाले ठीक करने में सहायक', 'थकान और एंटीबायोटिक के बाद कमजोरी में लाभकारी', 'त्वचा और नसों की सेहत के लिए'],
+    },
+    howToTake: {
+      en: 'Take 1 capsule daily after breakfast or lunch with water.',
+      hi: 'रोज सुबह नाश्ते या दोपहर के खाने के बाद 1 कैप्सूल पानी के साथ लें।',
+    },
+    sideEffects: {
+      en: ['Bright yellow urine (completely harmless, caused by Vitamin B2)'],
+      hi: ['पेशाब का रंग चमकीला पीला होना (विटामिन B2 के कारण, यह पूरी तरह सामान्य है)'],
+    },
+    precautions: {
+      en: ['Do not exceed 1 capsule daily unless advised by a doctor.'],
+      hi: ['डॉक्टर की सलाह के बिना दिन में 1 कैप्सूल से अधिक न लें।'],
+    },
+  },
+  {
+    id: 'meftal-spas',
+    brandName: 'Meftal-Spas',
+    aliases: ['Meftal Spas', 'Meftal', 'Mefenamic Dicyclomine'],
+    manufacturer: 'Blue Cross Laboratories',
+    packSize: { en: '10 Tablets', hi: '10 गोलियाँ' },
+    categoryKey: 'fever_pain',
+    category: { en: 'Fever & Pain Relief', hi: 'बुखार और दर्द निवारक' },
+    salts: [
+      { name: 'Mefenamic Acid', strength: '250 mg', normalizedKey: 'mefenamic_acid' },
+      { name: 'Dicyclomine Hydrochloride', strength: '10 mg', normalizedKey: 'dicyclomine' },
+    ],
+    brandedPriceINR: 54.0,
+    genericName: 'Mefenamic Acid 250 mg + Dicyclomine 10 mg Tablets',
+    genericManufacturer: 'PMBJP Jan Aushadhi',
+    genericPriceINR: 14.0,
+    janAushadhiCode: 'PMBJP-0379',
+    schedule: 'Schedule H',
+    prescriptionRequired: true,
+    summary: {
+      en: 'Relieves stomach cramps, intestinal spasms, and menstrual pain by relaxing abdominal muscles and reducing pain signals.',
+      hi: 'पेट की मरोड़, आंतों की ऐंठन और मासिक धर्म के दर्द से आराम दिलाने वाली दवा।',
+    },
+    uses: {
+      en: ['Menstrual cramps (period pain)', 'Abdominal spasms and colicky stomach pain'],
+      hi: ['मासिक धर्म (पीरियड्स) का दर्द', 'पेट में मरोड़ और ऐंठन का दर्द'],
+    },
+    howToTake: {
+      en: 'Take after food with water. Do not take on an empty stomach.',
+      hi: 'भोजन के बाद पानी के साथ लें। खाली पेट न लें।',
+    },
+    sideEffects: {
+      en: ['Dry mouth', 'Mild dizziness or blurred vision', 'Acidity'],
+      hi: ['मुंह सूखना', 'हल्का चक्कर आना', 'एसिडिटी'],
+    },
+    precautions: {
+      en: [
+        'Avoid combining with other NSAIDs like Combiflam, Voveran, or Aspirin.',
+        'Do not use routinely without identifying the cause of recurring stomach pain.',
+      ],
+      hi: [
+        'Combiflam, Voveran या Aspirin जैसी अन्य दर्द निवारक दवाओं के साथ न लें।',
+        'बार-बार पेट दर्द होने पर केवल दर्द की गोली न खाएं, डॉक्टर से जांच करवाएं।',
+      ],
+    },
+  },
+];

@@ -1,0 +1,6 @@
+{
+  "name": "DawaiSamjho",
+  "description": "Bilingual Hindi and English pharmaceutical assistance platform with OCR medicine strip scanning, voice readout, generic price comparison, duplicate salt and drug interaction checking, Jan Aushadhi store locator, and digital medicine cabinet.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
