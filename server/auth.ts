@@ -1,119 +1,176 @@
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import type { NextFunction, Request, Response } from 'express';
 import type { AuthUser } from '../src/types.ts';
+import { UserModel, type StoredUserRecord } from './models.ts';
+import { isMongoConnected } from './mongo.ts';
 
-// Signing secret read from server environment with ephemeral in-memory random fallback
-const SESSION_SECRET =
+const DATA_DIR = path.resolve(process.cwd(), 'data');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+
+// Use server-side SESSION_SECRET if configured, otherwise an ephemeral runtime key
+const SIGNING_KEY =
   process.env.SESSION_SECRET?.trim() || crypto.randomBytes(32).toString('hex');
 
-const TOKEN_TTL_SECONDS = 60 * 60 * 12; // 12 hours
+const TOKEN_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+const revokedTokenIds = new Set<string>();
 
-interface TokenPayload {
+export interface AuthenticatedRequest extends Request {
+  authUser?: AuthUser;
+  authTokenId?: string;
+}
+
+interface SessionPayload {
+  jti: string;
   sub: string;
   name: string;
   email: string | null;
   role: 'user' | 'guest';
-  iat: number;
   exp: number;
 }
 
-export interface AuthenticatedRequest extends Request {
-  authUser?: AuthUser;
-}
-
-/**
- * Hashes a user password with Node's crypto.scryptSync and a unique 16-byte random salt.
- */
-export function hashPassword(password: string): string {
+export function hashPassword(password: string): { salt: string; hash: string } {
   const salt = crypto.randomBytes(16).toString('hex');
   const derived = crypto.scryptSync(password, salt, 64).toString('hex');
-  return `${salt}:${derived}`;
+  return { salt, hash: derived };
 }
 
-/**
- * Verifies a password against a stored salt:hash using constant-time comparison.
- */
-export function verifyPassword(password: string, stored: string): boolean {
-  const parts = stored.split(':');
-  if (parts.length !== 2) return false;
-  const [salt, keyHex] = parts;
-  if (!salt || !keyHex) return false;
-  try {
-    const derived = crypto.scryptSync(password, salt, 64);
-    const keyBuf = Buffer.from(keyHex, 'hex');
-    if (derived.length !== keyBuf.length) return false;
-    return crypto.timingSafeEqual(derived, keyBuf);
-  } catch {
-    return false;
-  }
-}
-
-function base64UrlEncode(input: Buffer | string): string {
-  return Buffer.from(input)
-    .toString('base64')
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
-}
-
-function base64UrlDecode(input: string): string {
-  const pad = input.length % 4 === 0 ? '' : '='.repeat(4 - (input.length % 4));
-  const normalized = input.replace(/-/g, '+').replace(/_/g, '/') + pad;
-  return Buffer.from(normalized, 'base64').toString('utf8');
+export function verifyPassword(password: string, salt: string, expectedHash: string): boolean {
+  const derived = crypto.scryptSync(password, salt, 64);
+  const expectedBuf = Buffer.from(expectedHash, 'hex');
+  if (derived.length !== expectedBuf.length) return false;
+  return crypto.timingSafeEqual(derived, expectedBuf);
 }
 
 export function signSessionToken(user: AuthUser): string {
-  const now = Math.floor(Date.now() / 1000);
-  const payload: TokenPayload = {
+  const payload: SessionPayload = {
+    jti: crypto.randomBytes(12).toString('hex'),
     sub: user.id,
     name: user.name,
     email: user.email,
     role: user.role,
-    iat: now,
-    exp: now + TOKEN_TTL_SECONDS,
+    exp: Date.now() + TOKEN_TTL_MS,
   };
-  const encodedPayload = base64UrlEncode(JSON.stringify(payload));
-  const sig = crypto
-    .createHmac('sha256', SESSION_SECRET)
-    .update(encodedPayload)
-    .digest();
-  return `${encodedPayload}.${base64UrlEncode(sig)}`;
+  const encoded = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64url');
+  const sig = crypto.createHmac('sha256', SIGNING_KEY).update(encoded).digest('base64url');
+  return `${encoded}.${sig}`;
 }
 
-export function verifySessionToken(token: string): AuthUser | null {
+export function verifySessionToken(token: string): { user: AuthUser; jti: string } | null {
   const parts = token.split('.');
   if (parts.length !== 2) return null;
-  const [encodedPayload, providedSig] = parts;
-  if (!encodedPayload || !providedSig) return null;
+  const [encoded, providedSig] = parts;
+  const expectedSig = crypto
+    .createHmac('sha256', SIGNING_KEY)
+    .update(encoded)
+    .digest('base64url');
+
+  const sigBuf = Buffer.from(providedSig, 'utf-8');
+  const expBuf = Buffer.from(expectedSig, 'utf-8');
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+    return null;
+  }
 
   try {
-    const expectedSig = base64UrlEncode(
-      crypto.createHmac('sha256', SESSION_SECRET).update(encodedPayload).digest()
-    );
-    const a = Buffer.from(providedSig);
-    const b = Buffer.from(expectedSig);
-    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-      return null;
-    }
+    const payload = JSON.parse(
+      Buffer.from(encoded, 'base64url').toString('utf-8')
+    ) as SessionPayload;
 
-    const parsed = JSON.parse(base64UrlDecode(encodedPayload)) as TokenPayload;
-    const now = Math.floor(Date.now() / 1000);
-    if (!parsed.sub || !parsed.exp || parsed.exp < now) {
-      return null;
-    }
-    if (parsed.role !== 'user' && parsed.role !== 'guest') {
-      return null;
-    }
+    if (!payload.sub || !payload.jti || typeof payload.exp !== 'number') return null;
+    if (Date.now() > payload.exp) return null;
+    if (revokedTokenIds.has(payload.jti)) return null;
 
     return {
-      id: parsed.sub,
-      name: parsed.name,
-      email: parsed.email ?? null,
-      role: parsed.role,
+      jti: payload.jti,
+      user: {
+        id: payload.sub,
+        name: payload.name,
+        email: payload.email,
+        role: payload.role === 'guest' ? 'guest' : 'user',
+      },
     };
   } catch {
     return null;
   }
+}
+
+export function revokeSessionToken(jti: string): void {
+  revokedTokenIds.add(jti);
+}
+
+function readLocalUsers(): StoredUserRecord[] {
+  try {
+    if (!fs.existsSync(USERS_FILE)) return [];
+    const raw = fs.readFileSync(USERS_FILE, 'utf-8');
+    const parsed = JSON.parse(raw) as StoredUserRecord[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalUsers(users: StoredUserRecord[]): void {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
+}
+
+export async function findUserByEmail(email: string): Promise<StoredUserRecord | null> {
+  const normalized = email.trim().toLowerCase();
+  if (isMongoConnected()) {
+    return UserModel.findOne({ email: normalized }, { _id: 0 }).lean<StoredUserRecord | null>();
+  }
+  return readLocalUsers().find((u) => u.email === normalized) ?? null;
+}
+
+export async function createUserAccount(input: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<AuthUser> {
+  const normalizedEmail = input.email.trim().toLowerCase();
+  const { salt, hash } = hashPassword(input.password);
+  const record: StoredUserRecord = {
+    id: `usr-${crypto.randomBytes(8).toString('hex')}`,
+    name: input.name.trim(),
+    email: normalizedEmail,
+    passwordHash: hash,
+    passwordSalt: salt,
+    createdAt: new Date().toISOString(),
+  };
+
+  if (isMongoConnected()) {
+    await UserModel.create(record);
+  } else {
+    const users = readLocalUsers();
+    users.push(record);
+    writeLocalUsers(users);
+  }
+
+  return {
+    id: record.id,
+    name: record.name,
+    email: record.email,
+    role: 'user',
+  };
+}
+
+export function createGuestUser(): AuthUser {
+  return {
+    id: `guest-${crypto.randomBytes(8).toString('hex')}`,
+    name: 'Guest User',
+    email: null,
+    role: 'guest',
+  };
+}
+
+export function extractBearerToken(req: Request): string | null {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.slice(7).trim();
+  return token || null;
 }
 
 export function requireAuth(
@@ -121,43 +178,19 @@ export function requireAuth(
   res: Response,
   next: NextFunction
 ): void {
-  const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer ')) {
+  const token = extractBearerToken(req);
+  if (!token) {
     res.status(401).json({ error: 'Authentication required. Please sign in or continue as guest.' });
     return;
   }
-  const token = header.slice('Bearer '.length).trim();
-  const user = verifySessionToken(token);
-  if (!user) {
+
+  const verified = verifySessionToken(token);
+  if (!verified) {
     res.status(401).json({ error: 'Session expired or invalid. Please sign in again.' });
     return;
   }
-  req.authUser = user;
-  next();
-}
 
-// Simple per-IP in-memory rate limiter for auth endpoints (20 attempts per 10 minutes)
-const authAttempts = new Map<string, { count: number; resetAt: number }>();
-
-export function rateLimitAuth(req: Request, res: Response, next: NextFunction): void {
-  const ip = req.ip || req.socket.remoteAddress || 'unknown';
-  const now = Date.now();
-  const windowMs = 10 * 60 * 1000;
-  const entry = authAttempts.get(ip);
-
-  if (!entry || entry.resetAt < now) {
-    authAttempts.set(ip, { count: 1, resetAt: now + windowMs });
-    next();
-    return;
-  }
-
-  if (entry.count >= 20) {
-    res.status(429).json({
-      error: 'Too many authentication attempts. Please wait a few minutes before trying again.',
-    });
-    return;
-  }
-
-  entry.count += 1;
+  req.authUser = verified.user;
+  req.authTokenId = verified.jti;
   next();
 }

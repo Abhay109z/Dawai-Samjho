@@ -9,6 +9,7 @@ export interface StoredUserRecord {
   name: string;
   email: string;
   passwordHash: string;
+  passwordSalt: string;
   createdAt: string;
 }
 
@@ -18,6 +19,7 @@ const UserSchema = new Schema<StoredUserRecord>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, index: true },
     passwordHash: { type: String, required: true },
+    passwordSalt: { type: String, required: true },
     createdAt: { type: String, required: true },
   },
   { collection: 'users', versionKey: false }

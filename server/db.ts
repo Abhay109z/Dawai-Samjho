@@ -1,24 +1,14 @@
-import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import type { CabinetItem, JanAushadhiStore, Medicine } from '../src/types.ts';
 import { MEDICINES_DB } from './data/medicines.ts';
 import { JAN_AUSHADHI_STORES } from './data/stores.ts';
-import {
-  CabinetItemModel,
-  MedicineModel,
-  StoreModel,
-  UserModel,
-  type StoredUserRecord,
-} from './models.ts';
+import { CabinetItemModel, MedicineModel, StoreModel } from './models.ts';
 import { isMongoConnected } from './mongo.ts';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const CABINET_FILE = path.join(DATA_DIR, 'cabinet.json');
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
-
-// Isolated in-memory cabinet sessions for Guest users (kept ephemeral & private per guest session)
-const guestCabinets = new Map<string, CabinetItem[]>();
+const SEEDED_OWNERS_FILE = path.join(DATA_DIR, 'seeded_owners.json');
 
 function addDaysISO(daysOffset: number): string {
   const date = new Date();
@@ -26,10 +16,11 @@ function addDaysISO(daysOffset: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function createInitialCabinetSeed(ownerId: string): CabinetItem[] {
+export function createInitialCabinetSeed(ownerId = 'default'): CabinetItem[] {
+  const prefix = ownerId.slice(0, 12);
   return [
     {
-      id: `cab-${ownerId.slice(-6)}-1`,
+      id: `cab-${prefix}-1`,
       ownerId,
       medicineId: 'dolo-650',
       name: 'Dolo 650',
@@ -43,7 +34,7 @@ export function createInitialCabinetSeed(ownerId: string): CabinetItem[] {
       addedAt: addDaysISO(-14),
     },
     {
-      id: `cab-${ownerId.slice(-6)}-2`,
+      id: `cab-${prefix}-2`,
       ownerId,
       medicineId: 'telma-40',
       name: 'Telma 40',
@@ -57,7 +48,7 @@ export function createInitialCabinetSeed(ownerId: string): CabinetItem[] {
       addedAt: addDaysISO(-45),
     },
     {
-      id: `cab-${ownerId.slice(-6)}-3`,
+      id: `cab-${prefix}-3`,
       ownerId,
       medicineId: 'glycomet-gp-1',
       name: 'Glycomet-GP 1',
@@ -71,7 +62,7 @@ export function createInitialCabinetSeed(ownerId: string): CabinetItem[] {
       addedAt: addDaysISO(-20),
     },
     {
-      id: `cab-${ownerId.slice(-6)}-4`,
+      id: `cab-${prefix}-4`,
       ownerId,
       medicineId: 'combiflam',
       name: 'Combiflam',
@@ -87,69 +78,85 @@ export function createInitialCabinetSeed(ownerId: string): CabinetItem[] {
   ];
 }
 
-function readLocalJson<T>(filePath: string, fallback: T): T {
+function readLocalCabinetStore(): CabinetItem[] {
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(filePath)) return fallback;
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw) as T;
+    if (!fs.existsSync(CABINET_FILE)) return [];
+    const raw = fs.readFileSync(CABINET_FILE, 'utf-8');
+    const parsed = JSON.parse(raw) as CabinetItem[];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return fallback;
+    return [];
   }
 }
 
-function writeLocalJson<T>(filePath: string, data: T): void {
+function saveLocalCabinetStore(items: CabinetItem[]): void {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+  fs.writeFileSync(CABINET_FILE, JSON.stringify(items, null, 2), 'utf-8');
 }
 
-// --- User Repository ---
-
-export async function findUserByEmail(email: string): Promise<StoredUserRecord | null> {
-  const normalized = email.toLowerCase().trim();
-  if (isMongoConnected()) {
-    return UserModel.findOne({ email: normalized }, { _id: 0 }).lean<StoredUserRecord | null>();
+function readSeededOwners(): Set<string> {
+  try {
+    if (!fs.existsSync(SEEDED_OWNERS_FILE)) return new Set();
+    const raw = fs.readFileSync(SEEDED_OWNERS_FILE, 'utf-8');
+    const parsed = JSON.parse(raw) as string[];
+    return new Set(Array.isArray(parsed) ? parsed : []);
+  } catch {
+    return new Set();
   }
-  const users = readLocalJson<StoredUserRecord[]>(USERS_FILE, []);
-  return users.find((u) => u.email === normalized) ?? null;
 }
 
-export async function createUserRecord(input: {
-  name: string;
-  email: string;
-  passwordHash: string;
-}): Promise<StoredUserRecord> {
-  const record: StoredUserRecord = {
-    id: `usr-${crypto.randomBytes(8).toString('hex')}`,
-    name: input.name,
-    email: input.email.toLowerCase().trim(),
-    passwordHash: input.passwordHash,
-    createdAt: new Date().toISOString(),
+function markOwnerSeeded(ownerId: string): void {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+  const set = readSeededOwners();
+  set.add(ownerId);
+  fs.writeFileSync(SEEDED_OWNERS_FILE, JSON.stringify(Array.from(set), null, 2), 'utf-8');
+}
+
+export async function seedOwnerCabinetIfFirstVisit(ownerId: string): Promise<void> {
+  const seeded = readSeededOwners();
+  if (seeded.has(ownerId)) return;
+
+  if (isMongoConnected()) {
+    const existingCount = await CabinetItemModel.countDocuments({ ownerId });
+    if (existingCount === 0) {
+      await CabinetItemModel.insertMany(createInitialCabinetSeed(ownerId), { ordered: false });
+    }
+    markOwnerSeeded(ownerId);
+    return;
+  }
+
+  const all = readLocalCabinetStore();
+  if (!all.some((item) => item.ownerId === ownerId)) {
+    const next = [...all, ...createInitialCabinetSeed(ownerId)];
+    saveLocalCabinetStore(next);
+  }
+  markOwnerSeeded(ownerId);
+}
+
+export function enrichCabinetItem(item: CabinetItem): CabinetItem {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const exp = new Date(`${item.expiryDate}T00:00:00`);
+  const diffMs = exp.getTime() - today.getTime();
+  const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  let status: 'expired' | 'expiring_soon' | 'safe' = 'safe';
+  if (daysRemaining < 0) {
+    status = 'expired';
+  } else if (daysRemaining <= 30) {
+    status = 'expiring_soon';
+  }
+
+  return {
+    ...item,
+    daysRemaining,
+    status,
   };
-
-  if (isMongoConnected()) {
-    await UserModel.create(record);
-    // Seed starter cabinet items for the newly registered user
-    const starter = createInitialCabinetSeed(record.id);
-    await CabinetItemModel.insertMany(starter, { ordered: false }).catch(() => {});
-    return record;
-  }
-
-  const users = readLocalJson<StoredUserRecord[]>(USERS_FILE, []);
-  users.push(record);
-  writeLocalJson(USERS_FILE, users);
-
-  const allCabinets = readLocalJson<CabinetItem[]>(CABINET_FILE, []);
-  allCabinets.push(...createInitialCabinetSeed(record.id));
-  writeLocalJson(CABINET_FILE, allCabinets);
-  return record;
 }
-
-// --- Catalog Repositories ---
 
 export async function getAllMedicines(): Promise<Medicine[]> {
   if (isMongoConnected()) {
@@ -175,55 +182,15 @@ export async function getAllStores(): Promise<JanAushadhiStore[]> {
   return JAN_AUSHADHI_STORES;
 }
 
-// --- Owner-Scoped Digital Medicine Cabinet Repository ---
+export async function listCabinetItems(ownerId: string): Promise<CabinetItem[]> {
+  await seedOwnerCabinetIfFirstVisit(ownerId);
 
-export function enrichCabinetItem(item: CabinetItem): CabinetItem {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const exp = new Date(`${item.expiryDate}T00:00:00`);
-  const diffMs = exp.getTime() - today.getTime();
-  const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-  let status: 'expired' | 'expiring_soon' | 'safe' = 'safe';
-  if (daysRemaining < 0) {
-    status = 'expired';
-  } else if (daysRemaining <= 30) {
-    status = 'expiring_soon';
-  }
-
-  return {
-    ...item,
-    daysRemaining,
-    status,
-  };
-}
-
-function getOrSeedGuestCabinet(guestId: string): CabinetItem[] {
-  let list = guestCabinets.get(guestId);
-  if (!list) {
-    // Cap in-memory guest sessions to prevent unbounded growth
-    if (guestCabinets.size > 200) {
-      const oldestKey = guestCabinets.keys().next().value;
-      if (oldestKey) guestCabinets.delete(oldestKey);
-    }
-    list = createInitialCabinetSeed(guestId);
-    guestCabinets.set(guestId, list);
-  }
-  return list;
-}
-
-export async function listCabinetItems(ownerId: string, isGuest: boolean): Promise<CabinetItem[]> {
   let rawItems: CabinetItem[];
-
-  if (isGuest) {
-    rawItems = getOrSeedGuestCabinet(ownerId);
-  } else if (isMongoConnected()) {
+  if (isMongoConnected()) {
     rawItems = await CabinetItemModel.find({ ownerId }, { _id: 0 }).lean<CabinetItem[]>();
   } else {
-    const all = readLocalJson<CabinetItem[]>(CABINET_FILE, []);
-    rawItems = all.filter((item) => item.ownerId === ownerId);
+    rawItems = readLocalCabinetStore().filter((item) => item.ownerId === ownerId);
   }
-
   return rawItems
     .map(enrichCabinetItem)
     .sort((a, b) => (a.daysRemaining ?? 9999) - (b.daysRemaining ?? 9999));
@@ -231,47 +198,31 @@ export async function listCabinetItems(ownerId: string, isGuest: boolean): Promi
 
 export async function addCabinetItem(
   ownerId: string,
-  isGuest: boolean,
   input: Omit<CabinetItem, 'id' | 'ownerId' | 'addedAt' | 'status' | 'daysRemaining'>
 ): Promise<CabinetItem> {
   const newItem: CabinetItem = {
     ...input,
-    id: `cab-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
     ownerId,
+    id: `cab-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     addedAt: new Date().toISOString().slice(0, 10),
   };
-
-  if (isGuest) {
-    const list = getOrSeedGuestCabinet(ownerId);
-    list.push(newItem);
-    return enrichCabinetItem(newItem);
-  }
 
   if (isMongoConnected()) {
     await CabinetItemModel.create(newItem);
     return enrichCabinetItem(newItem);
   }
 
-  const all = readLocalJson<CabinetItem[]>(CABINET_FILE, []);
-  all.push(newItem);
-  writeLocalJson(CABINET_FILE, all);
+  const items = readLocalCabinetStore();
+  items.push(newItem);
+  saveLocalCabinetStore(items);
   return enrichCabinetItem(newItem);
 }
 
 export async function updateCabinetItem(
   ownerId: string,
-  isGuest: boolean,
   id: string,
   patch: Partial<Omit<CabinetItem, 'id' | 'ownerId' | 'addedAt'>>
 ): Promise<CabinetItem | null> {
-  if (isGuest) {
-    const list = getOrSeedGuestCabinet(ownerId);
-    const idx = list.findIndex((item) => item.id === id && item.ownerId === ownerId);
-    if (idx === -1) return null;
-    list[idx] = { ...list[idx], ...patch };
-    return enrichCabinetItem(list[idx]);
-  }
-
   if (isMongoConnected()) {
     const updated = await CabinetItemModel.findOneAndUpdate(
       { id, ownerId },
@@ -281,35 +232,23 @@ export async function updateCabinetItem(
     return updated ? enrichCabinetItem(updated) : null;
   }
 
-  const all = readLocalJson<CabinetItem[]>(CABINET_FILE, []);
-  const idx = all.findIndex((item) => item.id === id && item.ownerId === ownerId);
+  const items = readLocalCabinetStore();
+  const idx = items.findIndex((item) => item.id === id && item.ownerId === ownerId);
   if (idx === -1) return null;
-  all[idx] = { ...all[idx], ...patch };
-  writeLocalJson(CABINET_FILE, all);
-  return enrichCabinetItem(all[idx]);
+  items[idx] = { ...items[idx], ...patch };
+  saveLocalCabinetStore(items);
+  return enrichCabinetItem(items[idx]);
 }
 
-export async function deleteCabinetItem(
-  ownerId: string,
-  isGuest: boolean,
-  id: string
-): Promise<boolean> {
-  if (isGuest) {
-    const list = getOrSeedGuestCabinet(ownerId);
-    const idx = list.findIndex((item) => item.id === id && item.ownerId === ownerId);
-    if (idx === -1) return false;
-    list.splice(idx, 1);
-    return true;
-  }
-
+export async function deleteCabinetItem(ownerId: string, id: string): Promise<boolean> {
   if (isMongoConnected()) {
     const res = await CabinetItemModel.deleteOne({ id, ownerId });
     return res.deletedCount > 0;
   }
 
-  const all = readLocalJson<CabinetItem[]>(CABINET_FILE, []);
-  const next = all.filter((item) => !(item.id === id && item.ownerId === ownerId));
-  if (next.length === all.length) return false;
-  writeLocalJson(CABINET_FILE, next);
+  const items = readLocalCabinetStore();
+  const next = items.filter((item) => !(item.id === id && item.ownerId === ownerId));
+  if (next.length === items.length) return false;
+  saveLocalCabinetStore(next);
   return true;
 }

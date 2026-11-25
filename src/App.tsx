@@ -48,13 +48,22 @@ export default function App() {
   }, []);
 
   const handleSignOut = useCallback(() => {
+    const tokenToRevoke = authToken;
     stopSpeaking();
     setIsSpeaking(false);
     setAuthToken(null);
     setAuthUser(null);
     setCabinetItems([]);
     setShowAuthScreen(false);
-  }, []);
+    if (tokenToRevoke) {
+      fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenToRevoke}`,
+        },
+      }).catch(() => {});
+    }
+  }, [authToken]);
 
   const handleAuthenticated = useCallback(
     (token: string, user: AuthUser) => {
