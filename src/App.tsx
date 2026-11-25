@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { LogOut, Square, UserRound, Volume2, X } from 'lucide-react';
-import type { AuthUser, CabinetItem, Language, Medicine } from './types';
+import { Square, Volume2, X } from 'lucide-react';
+import type { CabinetItem, Language, Medicine } from './types';
 import { getText } from './i18n';
 import { speakText, stopSpeaking } from './utils/speech';
-import { AuthView } from './components/AuthView';
 import { ScannerView } from './components/ScannerView';
 import { MedicinesView } from './components/MedicinesView';
 import { InteractionsView } from './components/InteractionsView';
@@ -18,11 +17,6 @@ export default function App() {
   const [largeText, setLargeText] = useState(false);
   const [slowVoice, setSlowVoice] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-
-  // Auth session kept strictly in React memory (never persisted to localStorage/sessionStorage)
-  const [authToken, setAuthToken] = useState<string | null>(null);
-  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
-  const [showAuthScreen, setShowAuthScreen] = useState(false);
 
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [selectedMedicineId, setSelectedMedicineId] = useState<string | null>('dolo-650');
@@ -47,57 +41,9 @@ export default function App() {
     }, 3200);
   }, []);
 
-  const handleSignOut = useCallback(() => {
-    const tokenToRevoke = authToken;
-    stopSpeaking();
-    setIsSpeaking(false);
-    setAuthToken(null);
-    setAuthUser(null);
-    setCabinetItems([]);
-    setShowAuthScreen(false);
-    if (tokenToRevoke) {
-      fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${tokenToRevoke}`,
-        },
-      }).catch(() => {});
-    }
-  }, [authToken]);
-
-  const handleAuthenticated = useCallback(
-    (token: string, user: AuthUser) => {
-      setAuthToken(token);
-      setAuthUser(user);
-      setShowAuthScreen(false);
-      showToast(
-        user.role === 'guest'
-          ? lang === 'hi'
-            ? 'अतिथि सत्र शुरू हो गया है'
-            : 'Signed in as Guest'
-          : lang === 'hi'
-          ? `स्वागत है, ${user.name}`
-          : `Welcome, ${user.name}`
-      );
-    },
-    [lang, showToast]
-  );
-
   const fetchCabinet = useCallback(async () => {
-    if (!authToken) {
-      setCabinetItems([]);
-      return;
-    }
     try {
-      const resp = await fetch('/api/cabinet', {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      if (resp.status === 401) {
-        handleSignOut();
-        return;
-      }
+      const resp = await fetch('/api/cabinet');
       if (resp.ok) {
         const data = await resp.json();
         setCabinetItems(data.items ?? []);
@@ -105,7 +51,7 @@ export default function App() {
     } catch {
       // Ignore transient network errors
     }
-  }, [authToken, handleSignOut]);
+  }, []);
 
   useEffect(() => {
     fetch('/api/medicines')
@@ -195,21 +141,6 @@ export default function App() {
     { key: 'stores', label: t.nav.stores },
     { key: 'cabinet', label: t.nav.cabinet },
   ];
-
-  if (!authToken || !authUser || showAuthScreen) {
-    return (
-      <AuthView
-        lang={lang}
-        onChangeLang={(nextLang) => {
-          handleStopSpeak();
-          setLang(nextLang);
-        }}
-        onAuthenticated={handleAuthenticated}
-        canReturn={Boolean(authToken && authUser)}
-        onReturn={() => setShowAuthScreen(false)}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFBF7] text-[#122119]">
@@ -385,42 +316,16 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 text-xs">
-            {isSpeaking && (
-              <button
-                type="button"
-                onClick={handleStopSpeak}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors whitespace-nowrap shrink-0"
-              >
-                <Square className="w-3 h-3 fill-current" />
-                {t.toolbar.stopVoice}
-              </button>
-            )}
-
-            <div className="flex items-center gap-2.5 pl-2 border-l border-[#DED8A8]">
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#14532D] whitespace-nowrap">
-                <UserRound className="w-3.5 h-3.5" />
-                {authUser.role === 'guest' ? t.auth.guestLabel : authUser.name}
-              </span>
-              {authUser.role === 'guest' && (
-                <button
-                  type="button"
-                  onClick={() => setShowAuthScreen(true)}
-                  className="px-2.5 py-1 text-xs font-semibold rounded-md bg-[#15803D] text-white hover:bg-[#166534] transition-colors whitespace-nowrap shrink-0"
-                >
-                  {t.auth.signInUpgrade}
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md border border-[#D4DFD0] bg-white text-[#24382C] hover:bg-[#F2F6EE] transition-colors whitespace-nowrap shrink-0"
-              >
-                <LogOut className="w-3 h-3" />
-                {t.auth.signOut}
-              </button>
-            </div>
-          </div>
+          {isSpeaking && (
+            <button
+              type="button"
+              onClick={handleStopSpeak}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors whitespace-nowrap shrink-0"
+            >
+              <Square className="w-3 h-3 fill-current" />
+              {t.toolbar.stopVoice}
+            </button>
+          )}
         </div>
       </div>
 
@@ -429,7 +334,6 @@ export default function App() {
         {activeTab === 'scanner' && (
           <ScannerView
             lang={lang}
-            authToken={authToken}
             onSpeak={handleSpeak}
             onOpenMedicine={handleOpenMedicine}
             onAddToCabinet={handleAddToCabinet}
@@ -467,9 +371,6 @@ export default function App() {
         {activeTab === 'cabinet' && (
           <CabinetView
             lang={lang}
-            authToken={authToken}
-            isGuest={authUser.role === 'guest'}
-            onOpenAuth={() => setShowAuthScreen(true)}
             medicines={medicines}
             items={cabinetItems}
             onRefresh={fetchCabinet}

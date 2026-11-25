@@ -8,7 +8,6 @@ import { isMongoConnected } from './mongo.ts';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const CABINET_FILE = path.join(DATA_DIR, 'cabinet.json');
-const SEEDED_OWNERS_FILE = path.join(DATA_DIR, 'seeded_owners.json');
 
 function addDaysISO(daysOffset: number): string {
   const date = new Date();
@@ -16,12 +15,10 @@ function addDaysISO(daysOffset: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function createInitialCabinetSeed(ownerId = 'default'): CabinetItem[] {
-  const prefix = ownerId.slice(0, 12);
+export function createInitialCabinetSeed(): CabinetItem[] {
   return [
     {
-      id: `cab-${prefix}-1`,
-      ownerId,
+      id: 'cab-seed-1',
       medicineId: 'dolo-650',
       name: 'Dolo 650',
       genericName: 'Paracetamol Tablets IP 650 mg',
@@ -34,8 +31,7 @@ export function createInitialCabinetSeed(ownerId = 'default'): CabinetItem[] {
       addedAt: addDaysISO(-14),
     },
     {
-      id: `cab-${prefix}-2`,
-      ownerId,
+      id: 'cab-seed-2',
       medicineId: 'telma-40',
       name: 'Telma 40',
       genericName: 'Telmisartan Tablets IP 40 mg',
@@ -48,8 +44,7 @@ export function createInitialCabinetSeed(ownerId = 'default'): CabinetItem[] {
       addedAt: addDaysISO(-45),
     },
     {
-      id: `cab-${prefix}-3`,
-      ownerId,
+      id: 'cab-seed-3',
       medicineId: 'glycomet-gp-1',
       name: 'Glycomet-GP 1',
       genericName: 'Glimepiride 1 mg + Metformin 500 mg SR',
@@ -62,8 +57,7 @@ export function createInitialCabinetSeed(ownerId = 'default'): CabinetItem[] {
       addedAt: addDaysISO(-20),
     },
     {
-      id: `cab-${prefix}-4`,
-      ownerId,
+      id: 'cab-seed-4',
       medicineId: 'combiflam',
       name: 'Combiflam',
       genericName: 'Ibuprofen 400 mg + Paracetamol 325 mg',
@@ -80,12 +74,19 @@ export function createInitialCabinetSeed(ownerId = 'default'): CabinetItem[] {
 
 function readLocalCabinetStore(): CabinetItem[] {
   try {
-    if (!fs.existsSync(CABINET_FILE)) return [];
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(CABINET_FILE)) {
+      const seed = createInitialCabinetSeed();
+      fs.writeFileSync(CABINET_FILE, JSON.stringify(seed, null, 2), 'utf-8');
+      return seed;
+    }
     const raw = fs.readFileSync(CABINET_FILE, 'utf-8');
     const parsed = JSON.parse(raw) as CabinetItem[];
     return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return [];
+    return createInitialCabinetSeed();
   }
 }
 
@@ -94,47 +95,6 @@ function saveLocalCabinetStore(items: CabinetItem[]): void {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
   fs.writeFileSync(CABINET_FILE, JSON.stringify(items, null, 2), 'utf-8');
-}
-
-function readSeededOwners(): Set<string> {
-  try {
-    if (!fs.existsSync(SEEDED_OWNERS_FILE)) return new Set();
-    const raw = fs.readFileSync(SEEDED_OWNERS_FILE, 'utf-8');
-    const parsed = JSON.parse(raw) as string[];
-    return new Set(Array.isArray(parsed) ? parsed : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function markOwnerSeeded(ownerId: string): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  const set = readSeededOwners();
-  set.add(ownerId);
-  fs.writeFileSync(SEEDED_OWNERS_FILE, JSON.stringify(Array.from(set), null, 2), 'utf-8');
-}
-
-export async function seedOwnerCabinetIfFirstVisit(ownerId: string): Promise<void> {
-  const seeded = readSeededOwners();
-  if (seeded.has(ownerId)) return;
-
-  if (isMongoConnected()) {
-    const existingCount = await CabinetItemModel.countDocuments({ ownerId });
-    if (existingCount === 0) {
-      await CabinetItemModel.insertMany(createInitialCabinetSeed(ownerId), { ordered: false });
-    }
-    markOwnerSeeded(ownerId);
-    return;
-  }
-
-  const all = readLocalCabinetStore();
-  if (!all.some((item) => item.ownerId === ownerId)) {
-    const next = [...all, ...createInitialCabinetSeed(ownerId)];
-    saveLocalCabinetStore(next);
-  }
-  markOwnerSeeded(ownerId);
 }
 
 export function enrichCabinetItem(item: CabinetItem): CabinetItem {
@@ -182,14 +142,12 @@ export async function getAllStores(): Promise<JanAushadhiStore[]> {
   return JAN_AUSHADHI_STORES;
 }
 
-export async function listCabinetItems(ownerId: string): Promise<CabinetItem[]> {
-  await seedOwnerCabinetIfFirstVisit(ownerId);
-
+export async function listCabinetItems(): Promise<CabinetItem[]> {
   let rawItems: CabinetItem[];
   if (isMongoConnected()) {
-    rawItems = await CabinetItemModel.find({ ownerId }, { _id: 0 }).lean<CabinetItem[]>();
+    rawItems = await CabinetItemModel.find({}, { _id: 0 }).lean<CabinetItem[]>();
   } else {
-    rawItems = readLocalCabinetStore().filter((item) => item.ownerId === ownerId);
+    rawItems = readLocalCabinetStore();
   }
   return rawItems
     .map(enrichCabinetItem)
@@ -197,12 +155,10 @@ export async function listCabinetItems(ownerId: string): Promise<CabinetItem[]> 
 }
 
 export async function addCabinetItem(
-  ownerId: string,
-  input: Omit<CabinetItem, 'id' | 'ownerId' | 'addedAt' | 'status' | 'daysRemaining'>
+  input: Omit<CabinetItem, 'id' | 'addedAt' | 'status' | 'daysRemaining'>
 ): Promise<CabinetItem> {
   const newItem: CabinetItem = {
     ...input,
-    ownerId,
     id: `cab-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     addedAt: new Date().toISOString().slice(0, 10),
   };
@@ -219,13 +175,12 @@ export async function addCabinetItem(
 }
 
 export async function updateCabinetItem(
-  ownerId: string,
   id: string,
-  patch: Partial<Omit<CabinetItem, 'id' | 'ownerId' | 'addedAt'>>
+  patch: Partial<Omit<CabinetItem, 'id' | 'addedAt'>>
 ): Promise<CabinetItem | null> {
   if (isMongoConnected()) {
     const updated = await CabinetItemModel.findOneAndUpdate(
-      { id, ownerId },
+      { id },
       { $set: patch },
       { new: true, projection: { _id: 0 } }
     ).lean<CabinetItem | null>();
@@ -233,21 +188,21 @@ export async function updateCabinetItem(
   }
 
   const items = readLocalCabinetStore();
-  const idx = items.findIndex((item) => item.id === id && item.ownerId === ownerId);
+  const idx = items.findIndex((item) => item.id === id);
   if (idx === -1) return null;
   items[idx] = { ...items[idx], ...patch };
   saveLocalCabinetStore(items);
   return enrichCabinetItem(items[idx]);
 }
 
-export async function deleteCabinetItem(ownerId: string, id: string): Promise<boolean> {
+export async function deleteCabinetItem(id: string): Promise<boolean> {
   if (isMongoConnected()) {
-    const res = await CabinetItemModel.deleteOne({ id, ownerId });
+    const res = await CabinetItemModel.deleteOne({ id });
     return res.deletedCount > 0;
   }
 
   const items = readLocalCabinetStore();
-  const next = items.filter((item) => !(item.id === id && item.ownerId === ownerId));
+  const next = items.filter((item) => item.id !== id);
   if (next.length === items.length) return false;
   saveLocalCabinetStore(next);
   return true;

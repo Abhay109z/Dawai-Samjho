@@ -18,16 +18,6 @@ import {
   listCabinetItems,
   updateCabinetItem,
 } from './server/db.ts';
-import {
-  createGuestUser,
-  createUserAccount,
-  findUserByEmail,
-  requireAuth,
-  revokeSessionToken,
-  signSessionToken,
-  verifyPassword,
-  type AuthenticatedRequest,
-} from './server/auth.ts';
 import { connectMongoAtlas, getMongoStatus } from './server/mongo.ts';
 import type { AiVisionAnalysis, CabinetItem, Medicine } from './src/types.ts';
 
@@ -39,7 +29,6 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 
 const SAFE_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/;
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function asSafeString(val: unknown, maxLen = 240): string {
   if (typeof val !== 'string') return '';
@@ -72,88 +61,6 @@ async function startServer() {
       storage: status.connected ? 'mongodb_atlas' : 'local_fallback',
       reason: status.reason,
     });
-  });
-
-  // 0. Authentication Routes (Email/Password Register, Login, Guest Login, Me, Logout)
-  app.post('/api/auth/register', async (req, res) => {
-    try {
-      const name = asSafeString(req.body?.name, 80);
-      const email = asSafeString(req.body?.email, 120).toLowerCase();
-      const password = typeof req.body?.password === 'string' ? req.body.password : '';
-
-      if (name.length < 2) {
-        res.status(400).json({ error: 'Please enter your full name (at least 2 characters).' });
-        return;
-      }
-      if (!EMAIL_PATTERN.test(email)) {
-        res.status(400).json({ error: 'Please enter a valid email address.' });
-        return;
-      }
-      if (password.length < 8 || password.length > 128) {
-        res.status(400).json({ error: 'Password must be at least 8 characters long.' });
-        return;
-      }
-
-      const existing = await findUserByEmail(email);
-      if (existing) {
-        res.status(409).json({ error: 'An account with this email already exists. Please sign in.' });
-        return;
-      }
-
-      const user = await createUserAccount({ name, email, password });
-      const token = signSessionToken(user);
-      res.status(201).json({ user, token });
-    } catch (err) {
-      console.error('Registration error:', err);
-      res.status(500).json({ error: 'Unable to create account right now.' });
-    }
-  });
-
-  app.post('/api/auth/login', async (req, res) => {
-    try {
-      const email = asSafeString(req.body?.email, 120).toLowerCase();
-      const password = typeof req.body?.password === 'string' ? req.body.password : '';
-
-      if (!EMAIL_PATTERN.test(email) || !password) {
-        res.status(400).json({ error: 'Please enter your email and password.' });
-        return;
-      }
-
-      const record = await findUserByEmail(email);
-      if (!record || !verifyPassword(password, record.passwordSalt, record.passwordHash)) {
-        res.status(401).json({ error: 'Invalid email or password.' });
-        return;
-      }
-
-      const user = {
-        id: record.id,
-        name: record.name,
-        email: record.email,
-        role: 'user' as const,
-      };
-      const token = signSessionToken(user);
-      res.json({ user, token });
-    } catch (err) {
-      console.error('Login error:', err);
-      res.status(500).json({ error: 'Unable to sign in right now.' });
-    }
-  });
-
-  app.post('/api/auth/guest', (_req, res) => {
-    const user = createGuestUser();
-    const token = signSessionToken(user);
-    res.json({ user, token });
-  });
-
-  app.get('/api/auth/me', requireAuth, (req: AuthenticatedRequest, res) => {
-    res.json({ user: req.authUser });
-  });
-
-  app.post('/api/auth/logout', requireAuth, (req: AuthenticatedRequest, res) => {
-    if (req.authTokenId) {
-      revokeSessionToken(req.authTokenId);
-    }
-    res.json({ loggedOut: true });
   });
 
   // 1. Medicines catalog & fuzzy search
@@ -254,8 +161,8 @@ async function startServer() {
     }
   });
 
-  // 4. Server-side Gemini Vision OCR enhancement (Protected)
-  app.post('/api/ocr/analyze-image', requireAuth, async (req, res) => {
+  // 4. Server-side Gemini Vision OCR enhancement
+  app.post('/api/ocr/analyze-image', async (req, res) => {
     const imageBase64 = typeof req.body?.imageBase64 === 'string' ? req.body.imageBase64.trim() : '';
     const rawMime = asSafeString(req.body?.mimeType, 40);
     const mimeType = /^image\/(png|jpeg|jpg|webp)$/.test(rawMime) ? rawMime : 'image/png';
@@ -453,11 +360,10 @@ async function startServer() {
     }
   });
 
-  // 7. Digital Medicine Cabinet & Expiry Tracker CRUD (Protected & Scoped by Authenticated Owner)
-  app.get('/api/cabinet', requireAuth, async (req: AuthenticatedRequest, res) => {
+  // 7. Digital Medicine Cabinet & Expiry Tracker CRUD
+  app.get('/api/cabinet', async (_req, res) => {
     try {
-      const ownerId = req.authUser!.id;
-      const items = await listCabinetItems(ownerId);
+      const items = await listCabinetItems();
       const expired = items.filter((i) => i.status === 'expired').length;
       const expiringSoon = items.filter((i) => i.status === 'expiring_soon').length;
       const safe = items.filter((i) => i.status === 'safe').length;
@@ -471,9 +377,8 @@ async function startServer() {
     }
   });
 
-  app.post('/api/cabinet', requireAuth, async (req: AuthenticatedRequest, res) => {
+  app.post('/api/cabinet', async (req, res) => {
     try {
-      const ownerId = req.authUser!.id;
       const name = asSafeString(req.body?.name, 140);
       const expiryDate = asSafeString(req.body?.expiryDate, 20);
       const medicineIdRaw = asSafeString(req.body?.medicineId, 64);
@@ -495,7 +400,7 @@ async function startServer() {
             .slice(0, 10)
         : null;
 
-      const created = await addCabinetItem(ownerId, {
+      const created = await addCabinetItem({
         medicineId: matched?.id,
         name,
         genericName: asSafeString(req.body?.genericName, 160) || matched?.genericName,
@@ -515,16 +420,15 @@ async function startServer() {
     }
   });
 
-  app.patch('/api/cabinet/:id', requireAuth, async (req: AuthenticatedRequest, res) => {
+  app.patch('/api/cabinet/:id', async (req, res) => {
     try {
-      const ownerId = req.authUser!.id;
       const id = asSafeString(req.params.id, 64);
       if (!SAFE_ID_PATTERN.test(id)) {
         res.status(400).json({ error: 'Invalid record identifier.' });
         return;
       }
 
-      const patch: Partial<Omit<CabinetItem, 'id' | 'ownerId' | 'addedAt'>> = {};
+      const patch: Partial<Omit<CabinetItem, 'id' | 'addedAt'>> = {};
       if (typeof req.body?.name === 'string' && req.body.name.trim()) {
         patch.name = asSafeString(req.body.name, 140);
       }
@@ -544,7 +448,7 @@ async function startServer() {
         patch.dosageNote = asSafeString(req.body.dosageNote, 240);
       }
 
-      const updated = await updateCabinetItem(ownerId, id, patch);
+      const updated = await updateCabinetItem(id, patch);
       if (!updated) {
         res.status(404).json({ error: 'Cabinet record not found.' });
         return;
@@ -556,16 +460,15 @@ async function startServer() {
     }
   });
 
-  app.delete('/api/cabinet/:id', requireAuth, async (req: AuthenticatedRequest, res) => {
+  app.delete('/api/cabinet/:id', async (req, res) => {
     try {
-      const ownerId = req.authUser!.id;
       const id = asSafeString(req.params.id, 64);
       if (!SAFE_ID_PATTERN.test(id)) {
         res.status(400).json({ error: 'Invalid record identifier.' });
         return;
       }
 
-      const ok = await deleteCabinetItem(ownerId, id);
+      const ok = await deleteCabinetItem(id);
       if (!ok) {
         res.status(404).json({ error: 'Cabinet record not found.' });
         return;
